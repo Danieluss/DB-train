@@ -16,6 +16,7 @@ public class Ticket {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Column(columnDefinition = "UUID")
     private String uuid;
     @ManyToOne
     @JoinColumn(name = "discount_id")
