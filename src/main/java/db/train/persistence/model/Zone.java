@@ -1,6 +1,7 @@
 package db.train.persistence.model;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 public class Zone {
     @Id
     private Long id;
+    @Column(nullable = false)
     private String name;
     private String description;
     @ManyToMany

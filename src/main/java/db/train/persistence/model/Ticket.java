@@ -1,6 +1,7 @@
 package db.train.persistence.model;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,11 +11,16 @@ import javax.persistence.*;
 public class Ticket {
 
     @Id
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String uuid;
     @ManyToOne
     @JoinColumn(name = "discount_id")
     private Discount discount;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private TrainUser trainUser;
 }

@@ -15,7 +15,7 @@ public class CommutationTicketType {
     private Long id;
     private String name;
     private Double price;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "zone_id")
     private Zone zone;
 }
