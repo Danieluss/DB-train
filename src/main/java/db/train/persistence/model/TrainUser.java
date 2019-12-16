@@ -11,9 +11,9 @@ import java.util.List;
 public class TrainUser {
     @Id
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
     private String name;
     private String surname;
