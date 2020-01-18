@@ -1,6 +1,5 @@
 package db.train.persistence.model.type;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import db.train.persistence.model.Zone;
 import lombok.Data;
 

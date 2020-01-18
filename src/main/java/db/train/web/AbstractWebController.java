@@ -8,12 +8,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
 
-import javax.activation.MimeType;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {

@@ -1,6 +1,5 @@
 package db.train.persistence.model.join;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
 import db.train.persistence.model.embeddedable.DoubleId;
