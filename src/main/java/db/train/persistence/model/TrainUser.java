@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Entity
 public class TrainUser {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false, unique = true)
@@ -17,6 +18,6 @@ public class TrainUser {
     private String email;
     private String name;
     private String surname;
-    @OneToMany(mappedBy = "trainUser")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trainUser")
     private List<Ticket> tickets;
 }

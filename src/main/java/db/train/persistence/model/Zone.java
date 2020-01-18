@@ -10,12 +10,13 @@ import java.util.Set;
 @Data
 @Entity
 public class Zone {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)
     private String name;
     private String description;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "zones_connections",
             joinColumns = { @JoinColumn(name = "zone_id") },

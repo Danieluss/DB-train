@@ -9,11 +9,12 @@ import java.util.Map;
 @Data
 @Entity
 public class Station {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)
     private String place;
-    @OneToMany(mappedBy = "station1")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "station1")
     @MapKey(name = "station2")
     private Map<Station, Edge> edges = new LinkedHashMap<>();
     private Double longitude;

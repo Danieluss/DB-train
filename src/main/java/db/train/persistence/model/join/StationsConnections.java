@@ -1,5 +1,6 @@
 package db.train.persistence.model.join;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
 import db.train.persistence.model.embeddedable.DoubleId;
@@ -16,11 +17,11 @@ public class StationsConnections {
     private Integer number;
     @Column(nullable = false)
     private Boolean stop;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id")
     @MapsId("id1")
     private Station station;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "connection_id")
     @MapsId("id2")
     private Connection connection;

@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 public class Edge {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)

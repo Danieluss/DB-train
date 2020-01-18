@@ -1,0 +1,49 @@
+project setup --topLevelPackage db.train
+jpa setup --provider HIBERNATE --database POSTGRES --databaseName postgres --hostName localhost --userName postgres --password train
+
+entity jpa --class ~.model.Carriage
+entity jpa --class ~.model.CommutationTicket
+entity jpa --class ~.model.Connection
+entity jpa --class ~.model.Discount
+entity jpa --class ~.model.Edge
+entity jpa --class ~.model.PathTicket
+entity jpa --class ~.model.Station
+entity jpa --class ~.model.Ticket
+entity jpa --class ~.model.Train
+entity jpa --class ~.model.TrainUser
+entity jpa --class ~.model.Zone
+
+entity jpa --class ~.model.type.CarriageType
+entity jpa --class ~.model.type.CommutationTicketType
+
+entity jpa --class ~.model.join.StationsConnections
+entity jpa --class ~.model.embeddable.DoubleId
+
+focus --class ~.model.Carriage
+field reference --fieldName type --type ~.model.type.CarriageType --joinColumnName type_id --notNull
+
+focus --class ~.model.CommutationTicket
+field string --fieldName name --notNull --sizeMin 2 --sizeMax 128
+field number --fieldName price --type java.lang.Double --notNull
+field reference --fieldName zone --type ~.model.Zone --joinColumnName zone_id --notNull --cardinality MANY_TO_ONE
+
+focus --class ~.model.Connection
+field list --fieldName trains --type ~.model.Train --mappedBy connections --joinTable trains_join_connections
+field set --fieldName stations --type ~.model.StationsConnections --mappedBy connection
+
+focus --class ~.model.Train
+field string --fieldName name --notNull --sizeMin 2 --sizeMax 128
+field list --fieldName carriages --type ~.model.Carriage --joinColumnName train_id
+field list --fieldName connections --type ~.model.Connection --joinTable trains_join_connections --joinColumns train_id --inverseJoinColumns connection_id
+
+
+
+
+repository jpa --all
+
+service --all
+
+web mvc setup
+web mvc view setup --type THYMELEAF
+web mvc controller --all --responseType THYMELEAF
+web mvc controller --all --pathPrefix /api

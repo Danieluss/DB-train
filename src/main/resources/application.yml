@@ -5,5 +5,6 @@ spring:
     password: train
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
+  jpa.show-sql: true
   jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-  jpa.hibernate.ddl-auto: create
+  jpa.hibernate.ddl-auto: update

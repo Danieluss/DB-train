@@ -9,13 +9,12 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Ticket {
-
-    @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+    @Id
     @Column(columnDefinition = "UUID")
     private String uuid;
     @ManyToOne

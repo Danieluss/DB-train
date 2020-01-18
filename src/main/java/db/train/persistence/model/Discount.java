@@ -2,13 +2,12 @@ package db.train.persistence.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
 public class Discount {
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     @Id
     private Long id;
     private String name;

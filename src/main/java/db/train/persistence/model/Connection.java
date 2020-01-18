@@ -11,11 +11,12 @@ import java.util.Set;
 @Data
 @Entity
 public class Connection {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
-    @ManyToMany(mappedBy = "connections")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "connections")
     private List<Train> trains;
-    @OneToMany(mappedBy = "connection")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection")
     @OrderBy(value = "number")
     private Set<StationsConnections> stations = new LinkedHashSet<>();
 }

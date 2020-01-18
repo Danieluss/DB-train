@@ -1,14 +1,18 @@
 package db.train.persistence.model.type;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.webrepogen.annotations.GenerateWebRepository;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 public class CarriageType {
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)

@@ -11,14 +11,15 @@ import java.util.Set;
 @Data
 @Entity
 public class Train {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)
     private String name;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "train_id")
     private List<Carriage> carriages;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "trains_connections",
             joinColumns = { @JoinColumn(name = "train_id") },

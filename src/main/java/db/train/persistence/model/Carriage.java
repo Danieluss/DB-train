@@ -3,14 +3,12 @@ package db.train.persistence.model;
 import db.train.persistence.model.type.CarriageType;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Data
 @Entity
 public class Carriage {
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Id
     private Long id;
     @ManyToOne(optional = false)
