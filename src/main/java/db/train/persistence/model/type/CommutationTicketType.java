@@ -15,15 +15,16 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "commutation_ticket_type_gen", sequenceName = "commutation_ticket_type_seq", initialValue = 1000)
 public class CommutationTicketType {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "commutation_ticket_type_gen")
     @Id
     private Long id;
     private String name;
     @Column(nullable = false)
     private Double price;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "zone_id")
     private Zone zone;

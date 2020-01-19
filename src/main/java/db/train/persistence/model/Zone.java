@@ -17,20 +17,21 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "zone_gen", sequenceName = "zone_seq", initialValue = 1000)
 public class Zone {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "zone_gen")
     @Id
     private Long id;
     @Column(nullable = false)
     private String name;
     private String description;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "zones_connections",
-            joinColumns = { @JoinColumn(name = "zone_id") },
-            inverseJoinColumns = { @JoinColumn(name = "connection_id") })
+            joinColumns = {@JoinColumn(name = "zone_id")},
+            inverseJoinColumns = {@JoinColumn(name = "connection_id")})
     private List<Connection> connections;
 
     @JsonProperty("connections")

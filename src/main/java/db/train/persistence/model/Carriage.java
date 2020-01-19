@@ -14,12 +14,13 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "carriage_gen", sequenceName = "carriage_seq", initialValue = 1000)
 public class Carriage {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "carriage_gen")
     @Id
     private Long id;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id")
     private CarriageType type;

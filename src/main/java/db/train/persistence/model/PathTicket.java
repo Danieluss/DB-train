@@ -15,22 +15,22 @@ import javax.persistence.*;
 
 @Setter
 @Getter
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 public class PathTicket extends Ticket {
 
     @Column(nullable = false)
     private Double price;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns({
             @JoinColumn(name = "station1_id", referencedColumnName = "station_id", insertable = false, updatable = false),
             @JoinColumn(name = "connection_id", referencedColumnName = "connection_id", insertable = false, updatable = false)
     })
     private StationsConnections stationConnection1;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns({
             @JoinColumn(name = "station2_id", referencedColumnName = "station_id", insertable = false, updatable = false),

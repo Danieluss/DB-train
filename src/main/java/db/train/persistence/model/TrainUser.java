@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "train_user_gen", sequenceName = "train_user_seq", initialValue = 1000)
 public class TrainUser {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "train_user_gen")
     @Id
     private Long id;
     @Column(nullable = false, unique = true)
@@ -26,8 +27,8 @@ public class TrainUser {
     private String email;
     private String name;
     private String surname;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="uuid")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "uuid")
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "trainUser")
     private List<Ticket> tickets;
 

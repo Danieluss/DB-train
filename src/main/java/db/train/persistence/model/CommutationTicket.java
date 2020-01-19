@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Setter
 @Getter
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 public class CommutationTicket extends Ticket {
 
@@ -27,8 +27,8 @@ public class CommutationTicket extends Ticket {
     private Date startDate;
     @Column(nullable = false)
     private Date endDate;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id")
     private CommutationTicketType type;

@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
 public class Connection {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "connection_gen")
     @Id
     private Long id;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")

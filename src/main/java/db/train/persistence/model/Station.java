@@ -14,15 +14,16 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Entity
+@SequenceGenerator(name = "station_gen", sequenceName = "station_seq", initialValue = 1000)
 public class Station {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "station_gen")
     @Id
     @Access(AccessType.PROPERTY)
     private Long id;
     @Column(nullable = false)
     private String place;
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"station1"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "station1")
     private List<Edge> edges;
