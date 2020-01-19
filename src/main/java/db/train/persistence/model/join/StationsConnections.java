@@ -8,6 +8,7 @@ import db.train.persistence.model.type.CarriageType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.*;
 import java.io.Serializable;

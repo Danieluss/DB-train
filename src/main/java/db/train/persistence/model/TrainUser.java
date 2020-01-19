@@ -29,7 +29,7 @@ public class TrainUser {
     private String surname;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "uuid")
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trainUser")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trainUser", cascade = CascadeType.REMOVE)
     private List<Ticket> tickets;
 
     @JsonProperty("tickets")

@@ -27,7 +27,7 @@ public class Connection {
     private List<Train> trains;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection", cascade = CascadeType.REMOVE)
     @OrderBy(value = "number")
     private List<StationsConnections> stations;
 
