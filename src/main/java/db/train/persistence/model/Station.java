@@ -2,13 +2,17 @@ package db.train.persistence.model;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Data
+@Setter
+@Getter
 @Entity
 public class Station {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -24,4 +28,14 @@ public class Station {
     private List<Edge> edges;
     private Double longitude;
     private Double latitude;
+
+    @JsonProperty("edges")
+    public void setEdges(List<Long> ids) {
+        edges = ids.stream().map(id -> {
+            Edge edge = new Edge();
+            edge.setId(id);
+            return edge;
+        }).collect(Collectors.toList());
+    }
+
 }

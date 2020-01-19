@@ -1,18 +1,19 @@
 package db.train.persistence.model.join;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
 import db.train.persistence.model.embeddedable.DoubleId;
+import db.train.persistence.model.type.CarriageType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Data
+@Setter
+@Getter
 @Entity
 public class StationsConnections implements Serializable {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -32,4 +33,17 @@ public class StationsConnections implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "connection_id")
     private Connection connection;
+
+    @JsonProperty("station")
+    public void setStation(Long id) {
+        station = new Station();
+        station.setId(id);
+    }
+
+    @JsonProperty("connection")
+    public void setConnection(Long id) {
+        connection = new Connection();
+        connection.setId(id);
+    }
+
 }

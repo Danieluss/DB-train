@@ -2,13 +2,17 @@ package db.train.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import db.train.persistence.model.type.CarriageType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
 @Entity
 public class Carriage {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -19,5 +23,11 @@ public class Carriage {
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id")
     private CarriageType type;
+
+    @JsonProperty("type")
+    public void setType(Long id) {
+        type = new CarriageType();
+        type.setId(id);
+    }
 
 }

@@ -38,7 +38,8 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
 
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> list() {
-        return repo.findAll();
+        List<T> all = repo.findAll();
+        return all;
     }
 
     @RequestMapping(value = "/upsert", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

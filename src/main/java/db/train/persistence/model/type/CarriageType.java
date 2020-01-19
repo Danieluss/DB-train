@@ -1,14 +1,13 @@
 package db.train.persistence.model.type;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Entity
 public class CarriageType {
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
