@@ -9,7 +9,7 @@ import java.util.Set;
 @Data
 @Entity
 public class Zone {
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Id
     private Long id;
     @Column(nullable = false)
