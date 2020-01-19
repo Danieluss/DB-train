@@ -6,8 +6,8 @@ INSERT INTO carriage_type(id, seats, cabin) VALUES (1, 40, true) ON CONFLICT DO 
 INSERT INTO train(id, name) VALUES (1, 'Pegazus') ON CONFLICT DO NOTHING;
 INSERT INTO carriage(id, train_id, type_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO connection(id) VALUES (1) ON CONFLICT DO NOTHING;
-INSERT INTO stations_connections(station_id, connection_id, number, stop) VALUES (1, 1, 1, true) ON CONFLICT DO NOTHING;
-INSERT INTO stations_connections(station_id, connection_id, number, stop) VALUES (2, 1, 2, true) ON CONFLICT DO NOTHING;
+INSERT INTO stations_connections(id, station_id, connection_id, number, stop) VALUES (1, 1, 1, 1, true) ON CONFLICT DO NOTHING;
+INSERT INTO stations_connections(id, station_id, connection_id, number, stop) VALUES (2, 2, 1, 2, true) ON CONFLICT DO NOTHING;
 INSERT INTO trains_connections(train_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO train_user(id, email, name, surname, username) VALUES (1, 'user@gmail.com', 'Janusz', 'Kowalski', 'JK') ON CONFLICT DO NOTHING;
 INSERT INTO discount(id, name, percent_off) VALUES (1, 'świąteczna', 25) ON CONFLICT DO NOTHING;

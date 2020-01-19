@@ -1,5 +1,8 @@
 package db.train.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import db.train.persistence.model.type.CommutationTicketType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +22,8 @@ public class CommutationTicket extends Ticket {
     private Date startDate;
     @Column(nullable = false)
     private Date endDate;
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id")
     private CommutationTicketType type;

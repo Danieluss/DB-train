@@ -1,5 +1,8 @@
 package db.train.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,6 +11,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property="@UUID")
 public class Zone {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Id

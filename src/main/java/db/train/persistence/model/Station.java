@@ -1,7 +1,6 @@
 package db.train.persistence.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,6 +17,8 @@ public class Station {
     private Long id;
     @Column(nullable = false)
     private String place;
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     @JsonIgnoreProperties({"station1"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "station1")
     private List<Edge> edges;
