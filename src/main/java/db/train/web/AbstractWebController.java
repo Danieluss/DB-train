@@ -1,5 +1,8 @@
 package db.train.web;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,8 +41,17 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
 
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> list() {
-        List<T> all = repo.findAll();
-        return all;
+        return repo.findAll();
+    }
+
+    @RequestMapping(value = "/sort", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Iterable<T> sort(@RequestParam Sort sort) {
+        return repo.findAll(sort);
+    }
+
+    @RequestMapping(value = "/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> page(@RequestParam Pageable pageable) {
+        return repo.findAll(pageable);
     }
 
     @RequestMapping(value = "/upsert", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +59,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         return repo.save(entity);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void delete(@Valid @PathVariable(value = "id") ID id) {
         repo.deleteById(id);
     }
