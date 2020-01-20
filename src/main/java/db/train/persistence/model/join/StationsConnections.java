@@ -1,14 +1,13 @@
 package db.train.persistence.model.join;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
-import db.train.persistence.model.embeddedable.DoubleId;
-import db.train.persistence.model.type.CarriageType;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.domain.Pageable;
 
 import javax.persistence.*;
 import java.io.Serializable;

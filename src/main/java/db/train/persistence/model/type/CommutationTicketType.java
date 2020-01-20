@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import db.train.persistence.model.Connection;
 import db.train.persistence.model.Zone;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Setter
 @Getter
@@ -20,6 +19,7 @@ public class CommutationTicketType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "commutation_ticket_type_gen")
     @Id
     private Long id;
+    @NotBlank
     private String name;
     @Column(nullable = false)
     private Double price;

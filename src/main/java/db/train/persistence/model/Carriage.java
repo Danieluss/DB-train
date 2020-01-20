@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import db.train.persistence.model.type.CarriageType;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

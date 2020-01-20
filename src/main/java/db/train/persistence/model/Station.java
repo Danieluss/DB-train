@@ -1,14 +1,11 @@
 package db.train.persistence.model;
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Setter

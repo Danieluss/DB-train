@@ -1,8 +1,9 @@
 package db.train.persistence.model;
 
-import com.fasterxml.jackson.annotation.*;
-import db.train.persistence.model.type.CarriageType;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
