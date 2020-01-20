@@ -1,4 +1,4 @@
-package db.train.config;
+package db.train.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
