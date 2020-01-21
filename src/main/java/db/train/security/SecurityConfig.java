@@ -20,7 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/**").hasRole("ADMIN")
+                .antMatchers("/**")
+                .hasRole("ADMIN")
             .and()
                 .formLogin()
                 .usernameParameter("alias")
@@ -33,7 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID", "remember-me")
                 .logoutSuccessUrl("/")
-                .permitAll();
+                .permitAll()
+            .and()
+                .csrf()
+                .disable();
     }
 
 
