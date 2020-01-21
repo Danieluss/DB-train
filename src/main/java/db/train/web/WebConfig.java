@@ -3,6 +3,7 @@ package db.train.web;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -39,6 +40,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
         hibernateModule.configure(Hibernate5Module.Feature.FORCE_LAZY_LOADING, true);
 
         builder.modules(hibernateModule);
+
+        builder.modules(new JavaTimeModule());
 
         // Spring MVC default Objectmapper configuration
         builder.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

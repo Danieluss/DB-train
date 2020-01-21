@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/**")
-                .hasRole("ADMIN")
+                .permitAll()
             .and()
                 .formLogin()
                 .usernameParameter("alias")
