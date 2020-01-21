@@ -17,8 +17,8 @@ public class Station {
     @Id
     @Access(AccessType.PROPERTY)
     private Long id;
-    @Column(nullable = false)
-    private String place;
+    @Column(nullable = false, unique = true)
+    private String name;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"station1"})

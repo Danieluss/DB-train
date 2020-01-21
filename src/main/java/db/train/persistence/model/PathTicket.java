@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Setter
@@ -20,6 +21,8 @@ public class PathTicket extends Ticket {
 
     @Column(nullable = false)
     private Double price;
+    @Column(nullable = false)
+    private Date date;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

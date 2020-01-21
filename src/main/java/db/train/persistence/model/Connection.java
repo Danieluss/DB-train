@@ -20,6 +20,8 @@ public class Connection {
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "connection_gen")
     @Id
     private Long id;
+    @Column(nullable = false)
+    private String name;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "connections")

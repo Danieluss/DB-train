@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -24,6 +25,10 @@ public class StationsConnections implements Serializable {
     private Integer number;
     @Column(nullable = false)
     private Boolean stop;
+    @Column(nullable =  false)
+    private LocalTime arrival;
+    @Column(nullable = false)
+    private LocalTime departure;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY)
