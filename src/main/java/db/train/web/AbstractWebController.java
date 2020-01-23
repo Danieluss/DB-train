@@ -1,15 +1,18 @@
 package db.train.web;
 
+import db.train.repository.SpecificationFactory;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
+import org.webrepogen.ICRUDRepository;
 
 import javax.validation.Valid;
 import java.io.Serializable;
@@ -22,16 +25,18 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
 
-    private JpaRepository<T, ID> repo;
+    private ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
+    private Class<T> clazz;
 
     public AbstractWebController() {
     }
 
     @Override
-    public void init(JpaRepository<T, ID> jpaRepository, Class<T> clazz) {
-        this.repo = jpaRepository;
+    public void init(ICRUDRepository<T, ID> repository, Class<T> clazz) {
+        this.repo = repository;
         this.fields = Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> field.getType().getSimpleName()));
+        this.clazz = clazz;
     }
 
     @RequestMapping(value = "/fields", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,13 +65,23 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void delete(@Valid @PathVariable(value = "id") ID id) {
+    public void delete(@PathVariable(value = "id") ID id) {
         repo.deleteById(id);
     }
 
     @RequestMapping(value = "get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public T get(@Valid @PathVariable(value = "id") ID id) {
+    public T get(@PathVariable(value = "id") ID id) {
         return repo.getOne(id);
+    }
+
+    @RequestMapping(value = "search/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> search(@PathVariable(value = "string") String string) {
+        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
+    }
+
+    @RequestMapping(value = "search/page/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> searchPage(@PathVariable(value = "string") String string, @RequestParam Pageable pageable) {
+        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

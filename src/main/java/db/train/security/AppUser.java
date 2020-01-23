@@ -21,7 +21,9 @@ public class AppUser {
     private String alias;
     private String role;
 
+    @Column(unique = true)
     private String login;
+    @Column(unique = true)
     private String password;
 
 }

@@ -2,6 +2,7 @@ package db.train.web;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +47,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         // Spring MVC default Objectmapper configuration
         builder.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         builder.featuresToDisable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+        builder.featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         return builder;
     }
