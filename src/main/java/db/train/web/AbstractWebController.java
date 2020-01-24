@@ -50,7 +50,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     }
 
     @RequestMapping(value = "/sort", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<T> sort(@RequestParam Sort sort) {
+    public Iterable<T> sort(Sort sort) {
         return repo.findAll(sort);
     }
 
