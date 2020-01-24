@@ -61,6 +61,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry
+                .addRedirectViewController("/", "/index.html");
+    }
+
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/swagger-ui.html")
