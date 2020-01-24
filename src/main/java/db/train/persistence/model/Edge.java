@@ -4,16 +4,30 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Setter
 @Getter
 @Entity
 @SequenceGenerator(name = "edge_gen", sequenceName = "edge_seq", initialValue = 1000)
 public class Edge {
+
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("id", "")
+            .put("distance", "Dystans")
+            .put("station1", "Stacja od")
+            .put("station2", "Stacja do")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "edge_gen")
     @Id
     private Long id;

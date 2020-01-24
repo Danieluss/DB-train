@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +20,18 @@ import java.util.stream.Collectors;
 @Entity
 @SequenceGenerator(name = "zone_gen", sequenceName = "zone_seq", initialValue = 1000)
 public class Zone {
+
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("id", "")
+            .put("name", "Nazwa")
+            .put("description", "Opis")
+            .put("connections", "Połączenia")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "zone_gen")
     @Id
     private Long id;

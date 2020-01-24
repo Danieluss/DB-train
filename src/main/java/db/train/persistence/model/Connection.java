@@ -4,21 +4,37 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.join.StationsConnections;
 import lombok.Getter;
 import lombok.Setter;
+import org.webrepogen.annotations.ExcludedEntity;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
+@ExcludedEntity
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
 public class Connection {
+
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("id", "")
+            .put("name", "Nazwa połączenia - np. \"Tęczowy most\"")
+            .put("trains", "Pociągi")
+            .put("stations", "Stacje")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "connection_gen")
     @Id
     private Long id;

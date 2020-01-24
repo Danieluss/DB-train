@@ -1,7 +1,6 @@
 package db.train.web;
 
 import db.train.repository.SpecificationFactory;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,26 +16,42 @@ import org.webrepogen.ICRUDRepository;
 import javax.validation.Valid;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
 
+    private static final Long DEFAULT_LONG_ID = -1L;
+    private static final UUID DEFAULT_UUID = UUID.fromString("da4bc77b-e5f7-4ab4-9824-0dbd0e0a78d1");
+
+
     private ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
     private Class<T> clazz;
+    private Class<ID> idClazz;
 
     public AbstractWebController() {
     }
 
     @Override
-    public void init(ICRUDRepository<T, ID> repository, Class<T> clazz) {
+    public void init(ICRUDRepository<T, ID> repository, Class<T> clazz, Class<ID> idClazz) {
         this.repo = repository;
         this.fields = Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> field.getType().getSimpleName()));
         this.clazz = clazz;
+        this.idClazz = idClazz;
+    }
+
+    @RequestMapping(value = "tooltips", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> tooltips() throws InvocationTargetException, IllegalAccessException {
+        Method m = null;
+        try {
+            m = clazz.getMethod("getTooltips");
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+        return (Map<String, String>) m.invoke(null);
     }
 
     @RequestMapping(value = "/fields", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

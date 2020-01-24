@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.join.StationsConnections;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,16 +12,26 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
 
 
 @Setter
 @Getter
-@EqualsAndHashCode(callSuper = true)
 @Entity
 public class PathTicket extends Ticket {
 
-    @Column(nullable = false)
-    private Double price;
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("uuid", "")
+            .put("discount", "Przecena")
+            .put("price", "Cena")
+            .put("trainUser", "Właściciel")
+            .put("date", "Data ważności biletu")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @Column(nullable = false)
     private Date date;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")

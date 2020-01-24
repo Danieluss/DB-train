@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
 import lombok.Getter;
@@ -12,12 +13,28 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.Map;
 
 @Setter
 @Getter
 @Entity
 @SequenceGenerator(name = "stations_connections_gen", sequenceName = "stations_connections_seq", initialValue = 1000)
 public class StationsConnections implements Serializable {
+
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("id", "")
+            .put("number", "Numer w połączeniu")
+            .put("stop", "Pociąg zatrzymuje się na stacji")
+            .put("arrival", "Czas przybycia")
+            .put("departure", "Czas odjazdu")
+            .put("station", "Stacja")
+            .put("connection", "Połączenie")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stations_connections_gen")
     @Id
     private Long id;

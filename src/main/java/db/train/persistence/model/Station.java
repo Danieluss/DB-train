@@ -1,11 +1,13 @@
 package db.train.persistence.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Setter
@@ -13,6 +15,19 @@ import java.util.stream.Collectors;
 @Entity
 @SequenceGenerator(name = "station_gen", sequenceName = "station_seq", initialValue = 1000)
 public class Station {
+
+    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
+            .put("id", "")
+            .put("name", "Nazwa stacji")
+            .put("edges", "Krawędzi idące od stacji")
+            .put("longitude", "Długość geograficzna")
+            .put("latitude", "Szerokość geograficzna")
+            .build();
+
+    public static Map<String, String> getTooltips() {
+        return TOOLTIPS;
+    }
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "station_gen")
     @Id
     @Access(AccessType.PROPERTY)
