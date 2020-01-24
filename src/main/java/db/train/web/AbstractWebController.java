@@ -55,7 +55,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<T> page(@RequestParam Pageable pageable) {
+    public Page<T> page(Pageable pageable) {
         return repo.findAll(pageable);
     }
 
@@ -80,7 +80,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     }
 
     @RequestMapping(value = "search/page/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<T> searchPage(@PathVariable(value = "string") String string, @RequestParam Pageable pageable) {
+    public Page<T> searchPage(@PathVariable(value = "string") String string, Pageable pageable) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
     }
 
