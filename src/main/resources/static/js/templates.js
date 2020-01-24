@@ -86,15 +86,13 @@ edit["ticket"] = [
 ]
 edit["pathticket"] = [
     {name: "uuid", type: "__info__"},
-    {name: ["trainUser", "username"], type: "__info__", comment: "owner"},
+    {name: "trainUser", type: "__search__", object: "trainuser", searchBy: "email", return: "id"},
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
-    {name: "price", type: "number", min: "0", step: "0.01"},
-    {}
+    {name: "price", type: "number", min: "0", step: "0.01"}
 ]
 edit["commutationticket"] = [
     {name: "uuid", type: "__info__"},
-    // {name: ["trainUser", "username"], type: "__info__", comment: "owner"},
-    {name: "trainUser"},
+    {name: "trainUser", type: "__search__", object: "trainuser", searchBy: "email", return: "id"},
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
     {name: "startDate", type: "date"},
     {name: "endDate", type: "date"},

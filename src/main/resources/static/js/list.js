@@ -1,6 +1,6 @@
 function loadList() {
     var txt="<h1>" + name + "s</h1>"
-    txt+="<a href='#' title='add new'>" + getIcon("add") + "</a>"
+    txt+=`<a href='${getEditLink(0)}' title='add new'>${getIcon("add")}</a>`
     txt+="<div id='search'>"
     txt+="<p>Search:</p>"
     txt+="<input type='text' id='searchBar'/>"
