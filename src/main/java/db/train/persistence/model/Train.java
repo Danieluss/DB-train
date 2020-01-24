@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Setter
@@ -33,7 +35,7 @@ public class Train {
             name = "trains_connections",
             joinColumns = {@JoinColumn(name = "train_id")},
             inverseJoinColumns = {@JoinColumn(name = "connection_id")})
-    private List<Connection> connections;
+    private Set<Connection> connections;
 
     @JsonProperty("carriages")
     public void setCarriages(List<Long> ids) {
@@ -50,7 +52,20 @@ public class Train {
             Connection connections = new Connection();
             connections.setId(id);
             return connections;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Train train = (Train) o;
+        return Objects.equals(id, train.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
 }

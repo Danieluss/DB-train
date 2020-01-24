@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Setter
@@ -29,7 +31,7 @@ public class Zone {
             name = "zones_connections",
             joinColumns = {@JoinColumn(name = "zone_id")},
             inverseJoinColumns = {@JoinColumn(name = "connection_id")})
-    private List<Connection> connections;
+    private Set<Connection> connections;
 
     @JsonProperty("connections")
     public void setConnections(List<Long> ids) {
@@ -37,7 +39,20 @@ public class Zone {
             Connection connection = new Connection();
             connection.setId(id);
             return connection;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Zone zone = (Zone) o;
+        return Objects.equals(id, zone.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
 }

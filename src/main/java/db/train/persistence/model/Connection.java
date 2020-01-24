@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Setter
@@ -25,7 +27,7 @@ public class Connection {
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "connections")
-    private List<Train> trains;
+    private Set<Train> trains;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection", cascade = CascadeType.REMOVE)
@@ -38,7 +40,7 @@ public class Connection {
             Train train = new Train();
             train.setId(id);
             return train;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
     }
 
     @JsonProperty("stations")
@@ -48,6 +50,19 @@ public class Connection {
             stations.setId(id);
             return stations;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Connection connection = (Connection) o;
+        return Objects.equals(id, connection.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
 }
