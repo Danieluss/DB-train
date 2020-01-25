@@ -58,14 +58,15 @@ function updateSearch(htmlId, params) {
         for(var i=0; i < options.length; i++) {
             var val = options[i][params.searchBy]
             txt+=`<option value="${val}"/>`
+            console.log(val, query)
             if(val == query) {
-                $(`[name=${htmlId}]`).attr('return', options[i][params.return])
+                $(`[name='${htmlId}']`).attr('return', options[i][params.return])
                 resultSet = true
             }
         }
-        if(!resultSet) {
-            $(`[name=${htmlId}]`).attr('return', undefined)
-        }
+        // if(!resultSet) {
+        //     $(`[name='${htmlId}']`).attr('return', undefined)
+        // }
         $(`#${htmlId}-datalist`).html(txt)
     })
 }
@@ -148,7 +149,7 @@ function getInput(htmlId, params) {
 
 function getSearch(htmlId, params) {
     updateSearch(htmlId, params)
-    var value = $(`[name=${htmlId}]`).attr('return')
+    var value = $(`[name='${htmlId}']`).attr('return')
     console.log(value)
     return value
 }
