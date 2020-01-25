@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class SpecificationFactory {
 
-    private static final Pattern pattern = Pattern.compile("(\\w+?)([:<>\\[\\]_])(\\w+?),");
+    private static final Pattern pattern = Pattern.compile("(.+?)((__eq__)|(__like__)|(__gt__)|(__eqgt__)|(__lt__)|(__eqlt__)|(__null__)|(__nonnull__))(.*?),");
 
     public static <T> Specification<T> containsTextInAttributes(String text, Class<T> clazz) {
         String finalText = "%" + text + "%";
@@ -40,23 +40,28 @@ public class SpecificationFactory {
                         criterias
                                 .stream()
                                 .map( criteria -> {
-                                    if (criteria.getOperation().equalsIgnoreCase(">")) {
-                                        return builder.greaterThan(
-                                                root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase("<")) {
-                                        return builder.lessThan(
-                                                root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase("]")) {
-                                        return builder.greaterThanOrEqualTo(
-                                                root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase("[")) {
-                                        return builder.lessThanOrEqualTo(
-                                                root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase(":")) {
-                                        return builder.like(
-                                                root.get(criteria.getKey()).as(String.class), "%" + criteria.getValue().toString() + "%");
-                                    } else if (criteria.getOperation().equalsIgnoreCase("_")) {
-                                        return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+                                    switch(criteria.getOperation().toLowerCase()) {
+                                        case "__gt__":
+                                            return builder.greaterThan(
+                                                    root.get(criteria.getKey()), criteria.getValue().toString());
+                                        case "__lt__":
+                                            return builder.lessThan(
+                                                    root.get(criteria.getKey()), criteria.getValue().toString());
+                                        case "__eqgt__":
+                                            return builder.greaterThanOrEqualTo(
+                                                    root.get(criteria.getKey()), criteria.getValue().toString());
+                                        case "__eqlt__":
+                                            return builder.lessThanOrEqualTo(
+                                                    root.get(criteria.getKey()), criteria.getValue().toString());
+                                        case "__like__":
+                                            return builder.like(
+                                                    root.get(criteria.getKey()).as(String.class), "%" + criteria.getValue().toString() + "%");
+                                        case "__eq__":
+                                            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+                                        case "__null__":
+                                            return builder.isNull(root.get(criteria.getKey()));
+                                        case "__nonnull__":
+                                            return builder.isNotNull(root.get(criteria.getKey()));
                                     }
                                     return null;
                                 } )
