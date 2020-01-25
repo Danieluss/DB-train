@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class ShortestPathService {
 
     @AllArgsConstructor
-    @NoArgsConstructor
     @Data
     private static class Node {
 
