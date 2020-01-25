@@ -48,10 +48,6 @@ public class ShortestPathService {
 
 
     public List<Station> connect(Station from, Station to) { // return path (from; to]
-        System.out.println(from.getId() + " " + to.getId());
-        Hibernate.initialize(from);
-        Hibernate.initialize(to);
-        System.out.println(from.getEdges().size() + " " + to.getEdges().size());
         PriorityQueue<Node> queue = new PriorityQueue<>();
         queue.add(new Node(0, from, null));
         Map<Station, Node> previousStation = new HashMap();
