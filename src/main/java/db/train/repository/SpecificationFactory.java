@@ -55,10 +55,10 @@ public class SpecificationFactory {
                                     } else if (criteria.getOperation().equalsIgnoreCase("<")) {
                                         return builder.lessThan(
                                                 root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase("[")) {
+                                    } else if (criteria.getOperation().equalsIgnoreCase("]")) {
                                         return builder.greaterThanOrEqualTo(
                                                 root.get(criteria.getKey()), criteria.getValue().toString());
-                                    } else if (criteria.getOperation().equalsIgnoreCase("]")) {
+                                    } else if (criteria.getOperation().equalsIgnoreCase("[")) {
                                         return builder.lessThanOrEqualTo(
                                                 root.get(criteria.getKey()), criteria.getValue().toString());
                                     } else if (criteria.getOperation().equalsIgnoreCase(":")) {
