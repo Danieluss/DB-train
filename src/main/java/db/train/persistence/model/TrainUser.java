@@ -45,7 +45,11 @@ public class TrainUser {
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+    @NotBlank
+    @Column(nullable = false, unique = true)
     private String name;
+    @NotBlank
+    @Column(nullable = false, unique = true)
     private String surname;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "uuid")
     @JsonIdentityReference(alwaysAsId = true)
