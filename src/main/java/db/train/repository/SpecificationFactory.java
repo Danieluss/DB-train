@@ -14,15 +14,6 @@ import java.util.regex.Pattern;
 
 public class SpecificationFactory {
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class FilterCriteria {
-        private String key;
-        private String operation;
-        private Object value;
-    }
-
     private static final Pattern pattern = Pattern.compile("(\\w+?)([:<>\\[\\]_])(\\w+?),");
 
     public static <T> Specification<T> containsTextInAttributes(String text, Class<T> clazz) {
@@ -62,12 +53,8 @@ public class SpecificationFactory {
                                         return builder.lessThanOrEqualTo(
                                                 root.get(criteria.getKey()), criteria.getValue().toString());
                                     } else if (criteria.getOperation().equalsIgnoreCase(":")) {
-                                        if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                                            return builder.like(
-                                                    root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
-                                        } else {
-                                            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
-                                        }
+                                        return builder.like(
+                                                root.get(criteria.getKey()), "%" + criteria.getValue().toString() + "%");
                                     } else if (criteria.getOperation().equalsIgnoreCase("_")) {
                                         return builder.equal(root.get(criteria.getKey()), criteria.getValue());
                                     }

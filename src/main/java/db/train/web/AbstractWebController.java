@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
 
-    private ICRUDRepository<T, ID> repo;
+    protected ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
     private Class<T> clazz;
     private Class<ID> idClazz;
