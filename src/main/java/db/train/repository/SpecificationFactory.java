@@ -54,7 +54,7 @@ public class SpecificationFactory {
                                                 root.get(criteria.getKey()), criteria.getValue().toString());
                                     } else if (criteria.getOperation().equalsIgnoreCase(":")) {
                                         return builder.like(
-                                                root.get(criteria.getKey()), "%" + criteria.getValue().toString() + "%");
+                                                root.get(criteria.getKey()).as(String.class), "%" + criteria.getValue().toString() + "%");
                                     } else if (criteria.getOperation().equalsIgnoreCase("_")) {
                                         return builder.equal(root.get(criteria.getKey()), criteria.getValue());
                                     }
