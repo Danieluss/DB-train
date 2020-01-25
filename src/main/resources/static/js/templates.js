@@ -1,7 +1,8 @@
-menu = ["station", "connection", "train", "carriage", "carriagetype", "zone", "discount", "trainuser", "pathticket", "commutationticket"]
+menu = ["station", "edge", "connection", "train", "carriage", "carriagetype", "zone", "discount", "trainuser", "pathticket", "commutationticket"]
 
 lists = {}
 lists["station"] = [["name"]]
+lists["edge"] = [["id"]]
 // lists["connection"] = [["stations", 0, "station", "name"], "-", ["stations", -1, "station", "name"]]
 lists["connection"] = [["id"]]
 lists["train"] = [["name"]]
@@ -29,6 +30,12 @@ edit["station"] = [
         ],
         relation: "strong",
     }
+]
+edit["edge"] = [
+    {name: "id", type: "__info__"},
+    {name: "station1", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "station2", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "distance", type: "number", step: "1", min: "0", max: "40000000"},
 ]
 edit["connection_new"] = [
     {name: "departure", type: "time"},

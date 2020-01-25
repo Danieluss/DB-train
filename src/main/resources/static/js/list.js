@@ -20,7 +20,7 @@ function loadList() {
 function requestList() {
     var url = api+name+"/"
     if(query != "") {
-        url+="search/page/"+query
+        url+="search/page"
     } else {
         url+="page"
     }
@@ -29,6 +29,9 @@ function requestList() {
         sortBy = lists[name][0][0]
     }
     url+="?page=" + page + "&size=10&sort=" + sortBy
+    if(query != "") {
+        url+=`&query=${query}`
+    }
     $.get(url, function(data){
         obj = data.content
         totalPages = data.totalPages

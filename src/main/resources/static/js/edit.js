@@ -72,50 +72,8 @@ function showInput(htmlId, value, params) {
     insertHtml(htmlId, txt)
 }
 
-function updateSearch(htmlId, params) {
-    var  query = $(`[name='${htmlId}']`).val()
-    var url = api+params.object+"/"
-    if(query != "" || params.null != undefined) {
-        url+="filter/page"
-    } else {
-        url+="page"
-    }
-    var sortBy = "id"
-    if(lists[params.object][0].length == 1) {
-        sortBy = lists[params.object][0][0]
-    }
-    url+="?page=0&size=10&sort=" + sortBy
-    if(query != "" || params.null != undefined) {
-        url+="&query="
-        if(query != "") {
-            url+=`${params.searchBy}__like__${query},`
-        }
-        if(params.null != undefined) {
-            url+=`${params.null}__null__`
-        }
-    }
-    $.get(url, function(data){
-        var options = data.content
-        var txt = ""
-        var resultSet = false;
-        for(var i=0; i < options.length; i++) {
-            var val = options[i][params.searchBy]
-            txt+=`<option value="${val}"/>`
-            console.log(val, query)
-            if(val == query) {
-                console.log(`[name='${htmlId}']`)
-                $(`[name='${htmlId}']`).attr('return', options[i][params.return])
-                resultSet = true
-            }
-        }
-        if(!resultSet) {
-            $(`[name='${htmlId}']`).attr('return', undefined)
-        }
-        $(`#${htmlId}-datalist`).html(txt)
-    })
-}
-
 function showSearch(htmlId, value, params) {
+    var previousQuery = undefined
     console.log(htmlId)
     var txt = ""
     txt+= `<p>${params.name}</p>`
@@ -123,12 +81,58 @@ function showSearch(htmlId, value, params) {
     txt+= `<datalist id='${htmlId}-datalist'></datalist>`
     insertHtml(htmlId, txt)
     $(`[name='${htmlId}']`).bind("keyup input", function() {
-        updateSearch(htmlId, params)
+        updateSearch()
     })
     $.get(api+params.object+'/get/'+value, function(data){
         $(`[name='${htmlId}']`).val(data[params.searchBy])
-        updateSearch(htmlId, params)
+        updateSearch()
     })
+    function updateSearch() {
+        var query = $(`[name='${htmlId}']`).val()
+        if(query == previousQuery) {
+            return
+        }
+        previousQuery = query
+        var url = api+params.object+"/"
+        if(query != "" || params.null != undefined) {
+            url+="filter/page"
+        } else {
+            url+="page"
+        }
+        var sortBy = "id"
+        if(lists[params.object][0].length == 1) {
+            sortBy = lists[params.object][0][0]
+        }
+        url+="?page=0&size=10&sort=" + sortBy
+        if(query != "" || params.null != undefined) {
+            url+="&query="
+            if(query != "") {
+                url+=`${params.searchBy}__like__${query},`
+            }
+            if(params.null != undefined) {
+                url+=`${params.null}__null__`
+            }
+        }
+        $.get(url, function(data){
+            var options = data.content
+            var txt = ""
+            var resultSet = false;
+            for(var i=0; i < options.length; i++) {
+                var val = options[i][params.searchBy]
+                txt+=`<option value="${val}"/>`
+                console.log(val, query)
+                if(val == query) {
+                    console.log(`[name='${htmlId}']`)
+                    $(`[name='${htmlId}']`).attr('return', options[i][params.return])
+                    resultSet = true
+                }
+            }
+            if(!resultSet) {
+                $(`[name='${htmlId}']`).attr('return', undefined)
+            }
+            $(`#${htmlId}-datalist`).html(txt)
+        })
+    }
 }
 
 function showUsedSearch(htmlId, value, params) {
@@ -277,10 +281,11 @@ function getInput(htmlId, params) {
 }
 
 function getSearch(htmlId, params) {
+    var value = $(`[name='${htmlId}']`).attr('return')
     if(!(value > 0)) {
+        console.log(value)
         err[htmlId] = 'No object chosen'
     }
-    var value = $(`[name='${htmlId}']`).attr('return')
     return value
 }
 
