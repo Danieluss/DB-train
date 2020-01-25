@@ -1,4 +1,4 @@
-menu = ["station", "connection", "train", "carriage", "carriagetype", "zone", "discount", "trainuser", "ticket"]
+menu = ["station", "connection", "train", "carriage", "carriagetype", "zone", "discount", "trainuser", "pathticket", "commutationticket"]
 
 lists = {}
 lists["station"] = [["name"]]
@@ -11,6 +11,9 @@ lists["zone"] = [["name"]]
 lists["discount"] = [["name"]]
 lists["trainuser"] = [["name"], ["surname"]]
 lists["ticket"] = [["uuid"]]
+lists["pathticket"] = [["uuid"]]
+lists["commutationticket"] = [["uuid"]]
+lists["commutationtickettype"] = [["name"]]
 
 edit = {}
 edit["station"] = [
@@ -38,7 +41,6 @@ edit["connection_new"] = [
 ]
 edit["connection"] = [
     {name: "id", type: "__info__"},
-    {}
 ]
 edit["train"] = [
     {name: "id", type: "__info__"},
@@ -47,7 +49,6 @@ edit["train"] = [
         arr: [
             {name: "", type: "__search__", object: "carriage", searchBy: "id", return: "id"}
         ],
-        relation: "weak"
     }
 ]
 edit["carriage"] = [
