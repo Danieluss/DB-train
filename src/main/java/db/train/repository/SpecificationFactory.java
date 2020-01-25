@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class SpecificationFactory {
 
-    private static final Pattern pattern = Pattern.compile("(.+?)((__eq__)|(__like__)|(__gt__)|(__eqgt__)|(__lt__)|(__eqlt__)|(__null__)|(__nonnull__))(.*?),");
+    private static final Pattern pattern = Pattern.compile("(?<key>[^,_]+?)(?<operator>__eq__|__like__|__gt__|__eqgt__|__lt__|__eqlt__|__null__|__nonnull__)(?<value>[^,_]*?),");
 
     public static <T> Specification<T> containsTextInAttributes(String text, Class<T> clazz) {
         String finalText = "%" + text + "%";
@@ -33,7 +33,7 @@ public class SpecificationFactory {
         Matcher matcher = pattern.matcher(queryString + ",");
         List<FilterCriteria> criterias = new ArrayList<>();
         while(matcher.find()) {
-            criterias.add(new FilterCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+            criterias.add(new FilterCriteria(matcher.group("key"), matcher.group("operator"), matcher.group("value")));
         }
         return (root, query, builder) ->
                 builder.and(
