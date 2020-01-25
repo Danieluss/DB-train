@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
@@ -22,10 +23,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
-
-    private static final Long DEFAULT_LONG_ID = -1L;
-    private static final UUID DEFAULT_UUID = UUID.fromString("da4bc77b-e5f7-4ab4-9824-0dbd0e0a78d1");
-
 
     private ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
@@ -43,7 +40,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         this.idClazz = idClazz;
     }
 
-    @RequestMapping(value = "tooltips", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/tooltips", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> tooltips() throws InvocationTargetException, IllegalAccessException {
         Method m = null;
         try {
@@ -84,19 +81,29 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         repo.deleteById(id);
     }
 
-    @RequestMapping(value = "get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public T get(@PathVariable(value = "id") ID id) {
         return repo.getOne(id);
     }
 
-    @RequestMapping(value = "search/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<T> search(@PathVariable(value = "string") String string) {
+    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> search(@RequestParam(value = "query") String string) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
     }
 
-    @RequestMapping(value = "search/page/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<T> searchPage(@PathVariable(value = "string") String string, Pageable pageable) {
+    @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
+    }
+
+    @RequestMapping(value = "/filter/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> filter(@RequestParam(value = "query") String string) {
+        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)));
+    }
+
+    @RequestMapping(value = "/filter/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> filterPage(@RequestParam(value = "query") String string, Pageable pageable) {
+        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)), pageable);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -111,5 +118,6 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         });
         return errors;
     }
+
 }
 

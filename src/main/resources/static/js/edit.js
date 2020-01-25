@@ -1,11 +1,41 @@
 function loadEdit() {
-    var url = api+name+"/get/" + id
-    $.get(url, function(data) {
-        obj = data
-        showEditForm()
-    }).fail(function(){
-        errorPage()
-    })
+    if(id != 0) {
+        var url = api+name+"/get/" + id
+        $.get(url, function(data) {
+            obj = data
+            showEditForm()
+        }).fail(function(){
+            errorPage()
+        })
+    } else {
+        var url = api+name+"/fields"
+        $.get(url, function(data) {
+            obj = getDefaultObject(data)
+            showEditForm()
+        })
+    }
+}
+
+function getDefaultObject(data) {
+    var res = {}
+    var keys = Object.keys(data)
+    for(var i=0; i < keys.length; i++) {
+        var s = data[keys[i]]
+        var t
+        if(s == "String") {
+            t = ""
+        } else if(s == "Integer" || s == "Long" || s == "Double") {
+            t = 0
+        } else if(s == "Date") {
+            t = new Date().getTime()
+        } else if(s == "Set" || s == "List") {
+            t = []
+        } else {
+            t = 0
+        }
+        res[keys[i]] = t
+    }
+    return res
 }
 
 function showInfo(htmlId, value, params) {
@@ -31,6 +61,9 @@ function showInput(htmlId, value, params) {
         if(value) {
             txt+=" checked"
         }
+    } else if(params.type == "date") {
+        var d = new Date(value)
+        txt+= `value='${d.toISOString().slice(0, 10)}'`
     } else {
         txt+=`value='${value}'`
     }
@@ -39,7 +72,7 @@ function showInput(htmlId, value, params) {
 }
 
 function updateSearch(htmlId, params) {
-    var query = $(`[name='${htmlId}']`).val()
+    var  query = $(`[name='${htmlId}']`).val()
     var url = api+params.object+"/"
     if(query != "") {
         url+="search/page/"+query
@@ -60,29 +93,39 @@ function updateSearch(htmlId, params) {
             txt+=`<option value="${val}"/>`
             console.log(val, query)
             if(val == query) {
+                console.log(`[name='${htmlId}']`)
                 $(`[name='${htmlId}']`).attr('return', options[i][params.return])
                 resultSet = true
             }
         }
-        // if(!resultSet) {
-        //     $(`[name='${htmlId}']`).attr('return', undefined)
-        // }
+        if(!resultSet) {
+            $(`[name='${htmlId}']`).attr('return', undefined)
+        }
         $(`#${htmlId}-datalist`).html(txt)
     })
 }
 
 function showSearch(htmlId, value, params) {
+    console.log(htmlId)
     var txt = ""
     txt+= `<p>${params.name}</p>`
     txt+= `<input name='${htmlId}' list='${htmlId}-datalist'/>`
     txt+= `<datalist id='${htmlId}-datalist'></datalist>`
     insertHtml(htmlId, txt)
-    $(`[name='${htmlId}']`).bind("keyup", function() {
+    $(`[name='${htmlId}']`).bind("keyup input", function() {
         updateSearch(htmlId, params)
     })
     $.get(api+params.object+'/get/'+value, function(data){
         $(`[name='${htmlId}']`).val(data[params.searchBy])
         updateSearch(htmlId, params)
+    })
+}
+
+function showUsedSearch(htmlId, value, params) {
+    console.log("usedsearch: ", htmlId)
+    $.get(api+params.object+'/get/'+value, function(data){
+        var txt = `<p>${data[params.searchBy]}</p>`
+        insertHtml(htmlId, txt)
     })
 }
 
@@ -98,7 +141,74 @@ function showObject(htmlId, value, params) {
 }
 
 function showArray(htmlId, value, params) {
-
+    var txt=`<div><p>${params.name}</p>`
+    txt+=`<div id='${htmlId}-new-container'></div>`
+    txt+=`<a id='${htmlId}_new' href="#" title="Add">${getIcon("add")}</a>`
+    txt+="</div>"
+    for(var i=0; i < value.length; i++) {
+        var curId = htmlId+"-"+i
+        txt+='<div>'
+        txt+=`<div id='${curId}-container'></div>`
+        if(params.swapping) {
+            if(i > 0) {
+                txt+=`<a id='${curId}_up' href="#" title="Move up">${getIcon("keyboard_arrow_up")}</a>`
+            }
+            if(i+1 < value.length) {
+                txt+=`<a id='${curId}_down' href="#" title="Move down">${getIcon("keyboard_arrow_down")}</a>`
+            }
+        }
+        txt+=`<a id='${curId}_delete' href="#" title="Delete">${getIcon("delete")}</a>`
+        txt+='</div>'
+    }
+    insertHtml(htmlId, txt);
+    showSearch(htmlId+"-new", 0, params.arr[0])
+    $(`#${htmlId}_new`).on("click", function() {
+        var id = getSearch(htmlId+"-new", params.arr[0])
+        for(var i=0; i < value.length; i++) {
+            if(value[i] == id) {
+                alert("Object already on the list!")
+                return
+            }
+        }
+        if(id > 0) {
+            getArray(htmlId, value, params)
+            value.push()
+            showArray(htmlId, value, params)
+        } else {
+            alert("No such object!")
+        }
+    })
+    for(var i=0; i < value.length; i++) {
+        var curId = htmlId+"-"+i
+        var id = i
+        if(params.swapping) {
+            showSearch(curId, value[i], params.arr[0])
+            if(i > 0) {
+                $("#"+curId+"_up").on("click", function(){
+                    var tmp = value[id-1]
+                    value[id-1] = value
+                    value[id] = tmp
+                })
+            }
+            if(i+1 < value.length) {
+                $("#"+curId+"_down").on("click", function() {
+                    var tmp = value[id+1]
+                    value[id+1] = value
+                    value[id] = tmp
+                })
+            }
+        } else {
+            showUsedSearch(curId, value[i], params.arr[0])
+        }
+        $("#"+curId+"_delete").on("click", function() {
+            getArray(htmlId, value, params)
+            for(var j=id; j+1 < value.length; j++) {
+                value[j] = value[j+1]
+            }
+            value.pop()
+            showArray(htmlId, value, params)
+        })
+    }
 }
 
 showSth = {
@@ -115,26 +225,13 @@ function insertHtml(htmlId, txt) {
     $(`#${htmlId}-container`).html(txt)
 }
 
-function getGlobalParams() {
-    var e = edit[name]
-    //special case for tickets - TODO?
-    if(name == "ticket") {
-        if(obj.startDate != undefined) {
-            e = edit.commutationticket
-        } else {
-            e = edit.pathticket
-        }
-    }
-    return e
-}
-
 function showEditForm() {
     var txt = `<h1>${id == 0 ? "Add" : "Edit"} ${name}</h1>`
     txt+=`<div id='${name}-container'></div>`
     txt+=`<button onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
-    showObject(name, obj, getGlobalParams())
+    showObject(name, obj, edit[name])
 }
 
 
@@ -148,14 +245,16 @@ function getInput(htmlId, params) {
 }
 
 function getSearch(htmlId, params) {
-    updateSearch(htmlId, params)
     var value = $(`[name='${htmlId}']`).attr('return')
-    console.log(value)
     return value
 }
 
 function getArray(htmlId, value, params) {
-
+    for(var i=0; i < value.length; i++) {
+        if(params.swapping) {
+            value[i] = getArray(htmlId+"-"+i, params.arr[0])
+        }
+    }
 }
 
 getSth = {
@@ -177,15 +276,13 @@ function getObject(htmlId, value, params) {
         if(params[i].type == "__list__") {
             getArray(newHtmlId, value[params[i].name], params[i])
         } else {
-            console.log(params[i])
             value[params[i].name] = getSth[params[i].type](newHtmlId, params[i])
         }
     }
-    console.log(value)
 }
 
 function saveObject() {
-    getObject(name, obj, getGlobalParams())
+    getObject(name, obj, edit[name])
     return true
 }
 
@@ -198,8 +295,8 @@ function submitEditForm() {
             id = data.id
             var url = new URL(location.href)
             url.searchParams.set('id', id)
-            localStorage.href = url.href
-            // location.reload()
+            alert(url.href)
+            location.href = url.href
         }, function(xhr, err) {
             console.log(xhr, err)
         })
