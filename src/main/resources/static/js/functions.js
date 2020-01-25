@@ -48,3 +48,14 @@ function loadContent() {
 function getIcon(icon) {
     return '<i class="material-icons">' + icon + '</i>'
 }
+
+function postJson(url, data, success, error) {
+    $.ajax({
+        type: "POST",
+        contentType:"application/json; charset=utf-8",
+        url: url,
+        data: JSON.stringify(data),
+        success: success,
+        error: error
+    })
+}
