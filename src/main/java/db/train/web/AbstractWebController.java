@@ -9,13 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
 import org.webrepogen.ICRUDRepository;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -87,14 +87,19 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         return repo.getOne(id);
     }
 
+    @RequestMapping(value = "/search/deep", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> deepSearch(@RequestParam(value = "query") String string, @RequestParam(value = "depth") @Valid @Min(0) Integer depth, Pageable pageable) {
+        return repo.findAll(Specification.where(specificationFactory.deepSearch(string, clazz, depth)), pageable);
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> search(@RequestParam(value = "query") String string) {
-        return repo.findAll(Specification.where(specificationFactory.containsTextInAttributes(string, clazz)));
+        return repo.findAll(Specification.where(specificationFactory.search(string, clazz)));
     }
 
     @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
-        return repo.findAll(Specification.where(specificationFactory.containsTextInAttributes(string, clazz)), pageable);
+        return repo.findAll(Specification.where(specificationFactory.search(string, clazz)), pageable);
     }
 
     @RequestMapping(value = "/filter/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

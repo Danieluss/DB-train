@@ -1,21 +1,20 @@
 package db.train.web;
 
-import db.train.exception.CannotConnectException;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
-import db.train.repository.StationRepository;
 import db.train.service.ShortestPathService;
 import db.train.web.dto.StationList;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.webrepogen.ICRUDRepository;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/connection")
