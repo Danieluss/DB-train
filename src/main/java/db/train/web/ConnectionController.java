@@ -1,14 +1,12 @@
 package db.train.web;
 
+import db.train.exception.CannotConnectException;
 import db.train.persistence.model.Connection;
 import db.train.service.ShortestPathService;
 import db.train.web.dto.StationList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDRepository;
 
 import javax.validation.Valid;
