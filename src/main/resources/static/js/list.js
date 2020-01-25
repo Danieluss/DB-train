@@ -1,12 +1,13 @@
 function loadList() {
     var txt="<h1>" + name + "s</h1>"
+    txt+=`<a href='${getEditLink(0)}' title='add new'>${getIcon("add")}</a>`
     txt+="<div id='search'>"
     txt+="<p>Search:</p>"
     txt+="<input type='text' id='searchBar'/>"
     txt+="</div>"
     txt+="<div id='list'></div>"
     $("#mainContent").html(txt)
-    $("#searchBar").on("change", function(){
+    $("#searchBar").on("keyup", function(){
         query = $("#searchBar").val()
         page = 0
         requestList()
@@ -33,6 +34,15 @@ function requestList() {
         totalPages = data.totalPages
         showList()
     })
+}
+
+function getEditLink(id) {
+    params = [
+        {key: "action", value: "edit"},
+        {key: "name", value: name},
+        {key: "id", value: id}
+    ]
+    return createUrl(params)
 }
 
 function deleteEntry(i) {
@@ -67,13 +77,7 @@ function showListEntry(id, entry) {
     }
     txt+='</td>'
     txt+='<td>'
-    var idkey = edit[name][0]["name"]
-    params = [
-        {key: "action", value: "edit"},
-        {key: "name", value: name},
-        {key: idkey, value: entry[idkey]}
-    ]
-    txt+='<a href="' + createUrl(params) + '" title="Edit">' + getIcon("edit") + '</a>'
+    txt+='<a href="' + getEditLink(entry[edit[name][0]["name"]]) + '" title="Edit">' + getIcon("edit") + '</a>'
     txt+='</td>'
     txt+='<td>'
     txt+='<a href="#" onclick="deleteEntry(' + id + ')" title="Delete">' + getIcon("delete") + '</a>'
