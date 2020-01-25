@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.webrepogen.annotations.ExcludedEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,13 +23,14 @@ import java.util.stream.Collectors;
 @ExcludedEntity
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Connection {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("name", "Nazwa połączenia - np. \"Tęczowy most\"")
-            .put("trains", "Pociągi")
-            .put("stations", "Stacje")
+            .put("name", "Name of the connection - eg. \"Rainbow bridge\"")
+            .put("trains", "Operating trains")
+            .put("stations", "Stations in sequence")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -39,6 +41,7 @@ public class Connection {
     @Id
     private Long id;
     @Column(nullable = false)
+    @NotBlank
     private String name;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)

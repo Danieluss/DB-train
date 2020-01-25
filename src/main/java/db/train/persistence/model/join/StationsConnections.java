@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Map;
@@ -19,16 +21,17 @@ import java.util.Map;
 @Getter
 @Entity
 @SequenceGenerator(name = "stations_connections_gen", sequenceName = "stations_connections_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class StationsConnections implements Serializable {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("number", "Numer w połączeniu")
-            .put("stop", "Pociąg zatrzymuje się na stacji")
-            .put("arrival", "Czas przybycia")
-            .put("departure", "Czas odjazdu")
-            .put("station", "Stacja")
-            .put("connection", "Połączenie")
+            .put("number", "Number of station in connection")
+            .put("stop", "Does the train stop at the station?")
+            .put("arrival", "Time of arrival")
+            .put("departure", "Time of departure")
+            .put("station", "Station")
+            .put("connection", "Connection")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -38,6 +41,8 @@ public class StationsConnections implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stations_connections_gen")
     @Id
     private Long id;
+    @DecimalMin("0")
+    @DecimalMin("100000")
     @Column(nullable = false)
     private Integer number;
     @Column(nullable = false)
@@ -67,6 +72,11 @@ public class StationsConnections implements Serializable {
     public void setConnection(Long id) {
         connection = new Connection();
         connection.setId(id);
+    }
+
+    @AssertTrue(message="Arrival should be before")
+    private boolean isCrossValid() {
+        return this.arrival.isBefore(this.departure);
     }
 
 }

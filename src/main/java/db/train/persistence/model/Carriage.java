@@ -16,11 +16,12 @@ import java.util.Map;
 @Getter
 @Entity
 @SequenceGenerator(name = "carriage_gen", sequenceName = "carriage_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Carriage {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("type", "Typ wagonu")
+            .put("type", "Carriage type")
             .build();
 
     public static Map<String, String> getTooltips() {

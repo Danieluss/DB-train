@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @SequenceGenerator(name = "zone_gen", sequenceName = "zone_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Zone {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("name", "Nazwa")
-            .put("description", "Opis")
-            .put("connections", "Połączenia")
+            .put("name", "Name of the zone")
+            .put("description", "Description")
+            .put("connections", "Connections crossing the zone")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -36,6 +38,7 @@ public class Zone {
     @Id
     private Long id;
     @Column(nullable = false)
+    @NotBlank
     private String name;
     private String description;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")

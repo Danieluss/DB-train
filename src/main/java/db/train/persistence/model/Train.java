@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,13 +21,14 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @SequenceGenerator(name = "train_gen", sequenceName = "train_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Train {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("name", "Nazwa")
-            .put("carriages", "Wagony składowe")
-            .put("connections", "Obsługiwane połączenia")
+            .put("name", "Name of the train")
+            .put("carriages", "Attached carriages")
+            .put("connections", "Connections")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -36,11 +39,13 @@ public class Train {
     @Id
     private Long id;
     @Column(nullable = false)
+    @NotBlank
     private String name;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "train_id")
+    @Size(min = 1)
     private List<Carriage> carriages;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)

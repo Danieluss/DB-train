@@ -18,14 +18,17 @@ import java.util.Map;
 @Setter
 @Getter
 @Entity
+@Table(indexes = {@Index(columnList = "uuid", name = "uuid")})
 public class PathTicket extends Ticket {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("uuid", "")
-            .put("discount", "Przecena")
-            .put("price", "Cena")
-            .put("trainUser", "Właściciel")
-            .put("date", "Data ważności biletu")
+            .put("discount", "Discount")
+            .put("price", "Price")
+            .put("trainUser", "Owner")
+            .put("date", "Expiration date")
+            .put("stationConnection1", "From station in connection")
+            .put("stationConnection2", "To station in connection")
             .build();
 
     public static Map<String, String> getTooltips() {

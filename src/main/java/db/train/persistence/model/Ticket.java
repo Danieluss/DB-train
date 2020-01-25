@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,13 +19,14 @@ import java.util.UUID;
 @Getter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(indexes = {@Index(columnList = "uuid", name = "uuid")})
 public class Ticket {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("uuid", "")
-            .put("discount", "Przecena")
-            .put("price", "Cena")
-            .put("trainUser", "Właściciel biletu")
+            .put("discount", "Discount")
+            .put("price", "Price")
+            .put("trainUser", "Owner")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -40,6 +43,8 @@ public class Ticket {
     @Column(columnDefinition = "UUID")
     private UUID uuid;
     @Column(nullable = false)
+    @DecimalMin("0")
+    @DecimalMax("100000")
     private Double price;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)

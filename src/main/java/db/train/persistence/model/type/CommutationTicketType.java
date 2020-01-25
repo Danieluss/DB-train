@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
@@ -17,13 +19,14 @@ import java.util.Map;
 @Getter
 @Entity
 @SequenceGenerator(name = "commutation_ticket_type_gen", sequenceName = "commutation_ticket_type_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class CommutationTicketType {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("name", "Nazwa biletu - np. metropolitalny")
-            .put("price", "Cena")
-            .put("zone", "Dozwolona strefa")
+            .put("name", "Name of the ticket type")
+            .put("price", "Price")
+            .put("zone", "Permitted zone")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -34,8 +37,11 @@ public class CommutationTicketType {
     @Id
     private Long id;
     @NotBlank
+    @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+    @DecimalMin("0")
+    @DecimalMax("10000")
     private Double price;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)

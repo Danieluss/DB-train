@@ -10,25 +10,25 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
 import java.util.Date;
 import java.util.Map;
 
 @Setter
 @Getter
 @Entity
+@Table(indexes = {@Index(columnList = "uuid", name = "uuid")})
 public class CommutationTicket extends Ticket {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("uuid", "")
-            .put("discount", "Przecena")
-            .put("price", "Cena")
-            .put("trainUser", "Właściciel biletu")
-            .put("startDate", "Data rozpoczęcia ważności")
-            .put("endDate", "Data zakończenia ważności biletu")
+            .put("discount", "Discount")
+            .put("price", "Price")
+            .put("trainUser", "Owner")
+            .put("startDate", "Validity beginning date")
+            .put("endDate", "Expiration date")
+            .put("type", "Commutation ticket type")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -50,6 +50,11 @@ public class CommutationTicket extends Ticket {
     public void setType(Long id) {
         type = new CommutationTicketType();
         type.setId(id);
+    }
+
+    @AssertTrue(message="Arrival should be before")
+    private boolean isCrossValid() {
+        return this.startDate.before(this.endDate);
     }
 
 }

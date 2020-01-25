@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,14 +17,15 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @SequenceGenerator(name = "station_gen", sequenceName = "station_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Station {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("name", "Nazwa stacji")
-            .put("edges", "Krawędzi idące od stacji")
-            .put("longitude", "Długość geograficzna")
-            .put("latitude", "Szerokość geograficzna")
+            .put("name", "Name of the station")
+            .put("edges", "Outgoing edges")
+            .put("longitude", "Longitude")
+            .put("latitude", "Latitude")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -33,13 +37,18 @@ public class Station {
     @Access(AccessType.PROPERTY)
     private Long id;
     @Column(nullable = false, unique = true)
+    @NotBlank
     private String name;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"station1"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "station1")
     private List<Edge> edges;
+    @DecimalMin("-180")
+    @DecimalMax("180")
     private Double longitude;
+    @DecimalMin("-90")
+    @DecimalMax("90")
     private Double latitude;
 
     @JsonProperty("edges")

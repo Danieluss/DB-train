@@ -9,19 +9,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.util.Map;
 
 @Setter
 @Getter
 @Entity
 @SequenceGenerator(name = "edge_gen", sequenceName = "edge_seq", initialValue = 1000)
+@Table(indexes = {@Index(columnList = "id", name = "id")})
 public class Edge {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
             .put("id", "")
-            .put("distance", "Dystans")
-            .put("station1", "Stacja od")
-            .put("station2", "Stacja do")
+            .put("distance", "Distance in kilometers")
+            .put("station1", "From station")
+            .put("station2", "To station")
             .build();
 
     public static Map<String, String> getTooltips() {
@@ -32,6 +35,8 @@ public class Edge {
     @Id
     private Long id;
     @Column(nullable = false)
+    @DecimalMin("0")
+    @DecimalMax("100000")
     private Double distance;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
