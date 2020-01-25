@@ -336,8 +336,11 @@ function submitEditForm() {
             id = data.id
             var url = new URL(location.href)
             url.searchParams.set('id', id)
-            location.href = url.href
-            location.reload()
+            if(location.href != url.href) {
+                location.href = url.href
+            } else {
+                location.reload()
+            }
         }, function(xhr) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)

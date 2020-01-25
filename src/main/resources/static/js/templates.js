@@ -22,14 +22,14 @@ edit["station"] = [
     {name: "name", type: "text"},
     {name: "latitude", type: "number", step: "0.0001", min: "-90", max: "90"},
     {name: "longitude", type: "number", step: "0.0001", min: "-180", max: "180"},
-    {name: "edges", type: "__list__", 
-        arr: [
-            {name: "station2", type: "__search__", object: "station", searchBy: "name", return: "id"},
-            {name: "distance", type: "number", min: "0"},
-            {name: "station1", type: ""}
-        ],
-        relation: "strong",
-    }
+    // {name: "edges", type: "__list__", 
+    //     arr: [
+    //         {name: "station2", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    //         {name: "distance", type: "number", min: "0"},
+    //         {name: "station1", type: ""}
+    //     ],
+    //     relation: "strong",
+    // }
 ]
 edit["edge"] = [
     {name: "id", type: "__info__"},
@@ -38,7 +38,6 @@ edit["edge"] = [
     {name: "distance", type: "number", step: "1", min: "0", max: "40000000"},
 ]
 edit["connection_new"] = [
-    {name: "departure", type: "time"},
     {name: "stations", type: "__list__",
         arr: [
             {name: "", type: "__search__", object: "station", searchBy: "name", return: "id"},
@@ -48,6 +47,19 @@ edit["connection_new"] = [
 ]
 edit["connection"] = [
     {name: "id", type: "__info__"},
+    {name: "name", type: "text"},
+    {name: "departure", type: "time"},
+    {name: "stations", type: "__list__",
+        arr: [
+            {name: "stop", type: "checkbox"},
+            {name: "stopTime", type: "time"},
+        ]
+    },
+    {name: "trains", type: "__list__", 
+        arr: [
+            {name: "", type: "__search__", object: "train", searchBy: "name", return: "id"}
+        ]
+    }
 ]
 edit["train"] = [
     {name: "id", type: "__info__"},
