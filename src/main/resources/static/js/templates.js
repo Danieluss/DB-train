@@ -47,7 +47,7 @@ edit["train"] = [
     {name: "name", type: "text"},
     {name: "carriages", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "carriage", searchBy: "id", return: "id"}
+            {name: "", type: "__search__", object: "carriage", searchBy: "id", return: "id", null: "train"}
         ],
     }
 ]

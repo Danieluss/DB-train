@@ -1,4 +1,5 @@
 function loadEdit() {
+    err = {}
     if(id != 0) {
         var url = api+name+"/get/" + id
         $.get(url, function(data) {
@@ -74,8 +75,8 @@ function showInput(htmlId, value, params) {
 function updateSearch(htmlId, params) {
     var  query = $(`[name='${htmlId}']`).val()
     var url = api+params.object+"/"
-    if(query != "") {
-        url+="search/page/"+query
+    if(query != "" || params.null != undefined) {
+        url+="filter/page"
     } else {
         url+="page"
     }
@@ -84,6 +85,15 @@ function updateSearch(htmlId, params) {
         sortBy = lists[params.object][0][0]
     }
     url+="?page=0&size=10&sort=" + sortBy
+    if(query != "" || params.null != undefined) {
+        url+="&query="
+        if(query != "") {
+            url+=`${params.searchBy}__like__${query},`
+        }
+        if(params.null != undefined) {
+            url+=`${params.null}__null__`
+        }
+    }
     $.get(url, function(data){
         var options = data.content
         var txt = ""
@@ -132,11 +142,19 @@ function showUsedSearch(htmlId, value, params) {
 function showObject(htmlId, value, params) {
     var txt=""
     for(var i=0; i < params.length; i++) {
-        txt+=`<div id='${htmlId}-${params[i].name}-container'></div>`
+        var curId = htmlId+"-"+params[i].name
+        txt+=`<div id='${curId}-container'></div>`
+        txt+=`<div id=${curId}-error></div>`
     }
     insertHtml(htmlId, txt)
     for(var i=0; i < params.length; i++) {
-        showSth[params[i].type](htmlId + "-" + params[i].name, value[params[i].name], params[i])
+        var curId = htmlId + "-" + params[i].name
+        showSth[params[i].type](curId, value[params[i].name], params[i])
+        if(err[curId] != undefined) {
+            $(`#${curId}-error`).text(err[curId])
+        } else if(err[params[i].name] != undefined) {
+            $(`#${curId}-error`).text(err[params[i].name])
+        }
     }
 }
 
@@ -172,7 +190,7 @@ function showArray(htmlId, value, params) {
         }
         if(id > 0) {
             getArray(htmlId, value, params)
-            value.push()
+            value.push(id)
             showArray(htmlId, value, params)
         } else {
             alert("No such object!")
@@ -228,10 +246,15 @@ function insertHtml(htmlId, txt) {
 function showEditForm() {
     var txt = `<h1>${id == 0 ? "Add" : "Edit"} ${name}</h1>`
     txt+=`<div id='${name}-container'></div>`
+    txt+='<div id="general-error"></div>'
     txt+=`<button onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
     showObject(name, obj, edit[name])
+}
+
+function isInvalid(htmlId) {
+    return $(`[name='${htmlId}']`).is(":invalid")
 }
 
 
@@ -240,11 +263,23 @@ function getInput(htmlId, params) {
     if(params["type"] == "checkbox") {
         return $(id).is(":checked")
     } else {
+        if(isInvalid(htmlId)) {
+            err[htmlId] = `${params.name} has to be a valid ${params.type}`
+            if(params.min != undefined) {
+                err[htmlId]+=`, not less than ${params.min}`
+            }
+            if(params.max != undefined) {
+                err[htmlId]+=`, not greater than ${params.max}`
+            }
+        }
         return $(id).val()
     }
 }
 
 function getSearch(htmlId, params) {
+    if(!(value > 0)) {
+        err[htmlId] = 'No object chosen'
+    }
     var value = $(`[name='${htmlId}']`).attr('return')
     return value
 }
@@ -283,11 +318,12 @@ function getObject(htmlId, value, params) {
 
 function saveObject() {
     getObject(name, obj, edit[name])
-    return true
 }
 
 function submitEditForm() {
-    if(saveObject()) {
+    err = {}
+    saveObject()
+    if($.isEmptyObject(err)) {
         console.log(obj)
         postJson(api+name+"/upsert/", obj, function(data) {
             obj = data
@@ -295,12 +331,16 @@ function submitEditForm() {
             id = data.id
             var url = new URL(location.href)
             url.searchParams.set('id', id)
-            alert(url.href)
             location.href = url.href
-        }, function(xhr, err) {
-            console.log(xhr, err)
+            location.reload()
+        }, function(xhr) {
+            console.log(xhr)
+            err = JSON.parse(xhr.responseText)
+            showEditForm()
+            $("#general-error").text("There were errors in the form.")
         })
     } else {
-        //there are errors in your form
+        showEditForm()
+        $("#general-error").text("There were errors in the form. It couldn't have been submitted.")
     }
 }
