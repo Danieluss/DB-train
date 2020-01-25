@@ -1,5 +1,6 @@
 package db.train.service;
 
+import db.train.exception.CannotConnectException;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
 import db.train.web.dto.StationList;
@@ -39,7 +40,7 @@ public class ShortestPathService {
 
     public List<Station> connect(Station from, Station to) { // return path (from; to]
         //TODO
-        return new ArrayList<>();
+        throw new CannotConnectException(String.format("Could not find connection between %s and %s", from.getId(), to.getId()));
     }
 
 }
