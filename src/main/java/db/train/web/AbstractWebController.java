@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
@@ -90,12 +91,12 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     }
 
     @RequestMapping(value = "search/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<T> search(@PathVariable(value = "string") String string) {
+    public List<T> search(@RequestParam(value = "query") String string) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
     }
 
-    @RequestMapping(value = "search/page/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<T> searchPage(@PathVariable(value = "string") String string, Pageable pageable) {
+    @RequestMapping(value = "search/page/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
     }
 
@@ -111,5 +112,6 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         });
         return errors;
     }
+
 }
 
