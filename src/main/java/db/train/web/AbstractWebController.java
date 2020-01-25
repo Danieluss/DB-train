@@ -1,6 +1,7 @@
 package db.train.web;
 
 import db.train.repository.SpecificationFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,8 +30,8 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     private Class<T> clazz;
     private Class<ID> idClazz;
 
-    public AbstractWebController() {
-    }
+    @Autowired
+    private SpecificationFactory specificationFactory;
 
     @Override
     public void init(ICRUDRepository<T, ID> repository, Class<T> clazz, Class<ID> idClazz) {
@@ -88,22 +89,22 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
 
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> search(@RequestParam(value = "query") String string) {
-        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
+        return repo.findAll(Specification.where(specificationFactory.containsTextInAttributes(string, clazz)));
     }
 
     @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
-        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
+        return repo.findAll(Specification.where(specificationFactory.containsTextInAttributes(string, clazz)), pageable);
     }
 
     @RequestMapping(value = "/filter/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> filter(@RequestParam(value = "query") String string) {
-        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)));
+        return repo.findAll(Specification.where(specificationFactory.filterQuery(string, clazz)));
     }
 
     @RequestMapping(value = "/filter/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> filterPage(@RequestParam(value = "query") String string, Pageable pageable) {
-        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)), pageable);
+        return repo.findAll(Specification.where(specificationFactory.filterQuery(string, clazz)), pageable);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
