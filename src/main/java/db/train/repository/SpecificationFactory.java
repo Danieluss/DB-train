@@ -2,6 +2,7 @@ package db.train.repository;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.Entity;
 import javax.persistence.criteria.Predicate;
 import java.util.List;
 
@@ -12,11 +13,12 @@ public class SpecificationFactory {
         return (root, query, builder) ->
                 builder.or(
                         root.getModel()
-                                .getDeclaredSingularAttributes()
+                                .getSingularAttributes()
                                 .stream()
-                                .map(a -> builder.like(root.get(a.getName()).as(String.class), finalText))
+                                .filter(a -> a.getType().getJavaType().getAnnotation(Entity.class) == null)
+                                .map(a -> builder.like(root.get(a.getName()).as(String.class), finalText)                                )
                                 .toArray(Predicate[]::new)
-        );
+                );
     }
 
 }

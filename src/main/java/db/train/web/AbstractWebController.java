@@ -44,7 +44,7 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         this.idClazz = idClazz;
     }
 
-    @RequestMapping(value = "tooltips", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/tooltips", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> tooltips() throws InvocationTargetException, IllegalAccessException {
         Method m = null;
         try {
@@ -85,17 +85,17 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         repo.deleteById(id);
     }
 
-    @RequestMapping(value = "get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public T get(@PathVariable(value = "id") ID id) {
         return repo.getOne(id);
     }
 
-    @RequestMapping(value = "search/{string}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> search(@RequestParam(value = "query") String string) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
     }
 
-    @RequestMapping(value = "search/page/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
     }
