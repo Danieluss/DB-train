@@ -24,10 +24,6 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
 
-    private static final Long DEFAULT_LONG_ID = -1L;
-    private static final UUID DEFAULT_UUID = UUID.fromString("da4bc77b-e5f7-4ab4-9824-0dbd0e0a78d1");
-
-
     private ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
     private Class<T> clazz;
@@ -98,6 +94,16 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
         return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
+    }
+
+    @RequestMapping(value = "/filter/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> filter(@RequestParam(value = "query") String string) {
+        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)));
+    }
+
+    @RequestMapping(value = "/filter/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> filterPage(@RequestParam(value = "query") String string, Pageable pageable) {
+        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)), pageable);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
