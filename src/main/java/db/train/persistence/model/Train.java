@@ -43,8 +43,7 @@ public class Train {
     private String name;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "train_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "train")
     @Size(min = 1)
     private List<Carriage> carriages;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
