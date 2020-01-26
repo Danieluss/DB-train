@@ -48,14 +48,14 @@ edit["connection_new"] = [
 edit["connection"] = [
     {name: "id", type: "__info__"},
     {name: "name", type: "text"},
-    {name: "departure", type: "time"},
     {name: "stations", type: "__connectionlist__",
+        departure: {name: "departure", type: "time"},
         arr: [
             {name: "stop", type: "checkbox"},
-            {name: "", type: "__usedSearch__", object: "station", searchBy: "name", return: "id"},
-            {name: "stopTime", type: "time"},
-            {name: "arrival", type: "__info__"},
-            {name: "departure", type: "__info__"}
+            {name: "station", type: "__usedSearch__", object: "station", searchBy: "name", return: "id"},
+            {name: "stopTime", type: "number", min:"0"},
+            {name: "arrival", type: "__infotime__"},
+            {name: "departure", type: "__infotime__"}
         ],
     },
     {name: "trains", type: "__list__", 

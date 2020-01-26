@@ -15,6 +15,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.DecimalMax;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class StationsConnections implements Serializable {
     @Id
     private Long id;
     @DecimalMin("0")
-    @DecimalMin("100000")
+    @DecimalMax("100000")
     @Column(nullable = false)
     private Integer number;
     @Column(nullable = false)
@@ -80,7 +81,7 @@ public class StationsConnections implements Serializable {
 
     @AssertTrue(message="Arrival should be before")
     private boolean isCrossValid() {
-        return this.arrival.isBefore(this.departure);
+        return (!(this.arrival.isAfter(this.departure)));
     }
 
 }

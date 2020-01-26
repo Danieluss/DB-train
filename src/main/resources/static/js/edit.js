@@ -1,9 +1,9 @@
 function loadEdit() {
+    err = {}
     if(name == "connection") {
-        showConnectionForm()
+        loadConnection()
         return
     }
-    err = {}
     if(id != 0) {
         var url = api+name+"/get/" + id
         $.get(url, function(data) {
@@ -205,22 +205,28 @@ function showArray(htmlId, value, params) {
         }
     })
     for(var i=0; i < value.length; i++) {
-        var curId = htmlId+"-"+i
-        var id = i
+        prep(i)
+    }
+    function prep(id) {
+        var curId = htmlId+"-"+id
         if(params.swapping) {
-            showSearch(curId, value[i], params.arr[0])
-            if(i > 0) {
+            showSearch(curId, value[id], params.arr[0])
+            if(id > 0) {
                 $("#"+curId+"_up").on("click", function(){
+                    getArray(htmlId, value, params)
                     var tmp = value[id-1]
-                    value[id-1] = value
+                    value[id-1] = value[id]
                     value[id] = tmp
+                    showArray(htmlId, value, params)
                 })
             }
-            if(i+1 < value.length) {
+            if(id+1 < value.length) {
                 $("#"+curId+"_down").on("click", function() {
+                    getArray(htmlId, value, params)
                     var tmp = value[id+1]
-                    value[id+1] = value
+                    value[id+1] = value[id]
                     value[id] = tmp
+                    showArray(htmlId, value, params)
                 })
             }
         } else {
@@ -239,10 +245,12 @@ function showArray(htmlId, value, params) {
 
 showSth = {
     __info__: showInfo,
+    __infotime__: showInfoTime,
     text: showInput,
     number: showInput,
     checkbox: showInput,
     date: showInput,
+    time: showInput,
     __search__: showSearch,
     __usedSearch__: showUsedSearch,
     __list__: showArray,
@@ -298,7 +306,7 @@ function getSearch(htmlId, params) {
 function getArray(htmlId, value, params) {
     for(var i=0; i < value.length; i++) {
         if(params.swapping) {
-            value[i] = getArray(htmlId+"-"+i, params.arr[0])
+            value[i] = getSearch(htmlId+"-"+i, params.arr[0])
         }
     }
 }
@@ -321,8 +329,8 @@ function getObject(htmlId, value, params) {
         if(getSth[params[i].type] == undefined) {
             continue;
         }
-        if(params[i].type == "__list__") {
-            getArray(newHtmlId, value[params[i].name], params[i])
+        if(params[i].type == "__list__" || params[i].type == "__connectionlist__") {
+            getSth[params[i].type](newHtmlId, value[params[i].name], params[i])
         } else {
             value[params[i].name] = getSth[params[i].type](newHtmlId, params[i])
         }
@@ -338,12 +346,20 @@ function submitEditForm() {
     saveObject()
     if($.isEmptyObject(err)) {
         console.log(obj)
+        if(name == "connection" && id == 0) {
+            obj.stations = []
+        }
         postJson(api+name+"/upsert/", obj, function(data) {
             obj = data
             console.log(obj)
             id = data.id
+            if(name == "connection") {
+                saveConnectionArray()
+                return
+            }
             var url = new URL(location.href)
             url.searchParams.set('id', id)
+            alert("LOCK")
             if(location.href != url.href) {
                 location.href = url.href
             } else {
@@ -352,7 +368,12 @@ function submitEditForm() {
         }, function(xhr) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
-            showEditForm()
+            if(name == "connection") {
+                showConnectionForm()
+                
+            } else {
+                showEditForm()
+            }
             $("#general-error").text("There were errors in the form.")
         })
     } else {
