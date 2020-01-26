@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.type.CommutationTicketType;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 

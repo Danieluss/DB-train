@@ -1,6 +1,7 @@
 package db.train.web;
 
 import db.train.repository.SpecificationFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,13 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.webrepogen.ICRUDController;
 import org.webrepogen.ICRUDRepository;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,8 +30,8 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
     private Class<T> clazz;
     private Class<ID> idClazz;
 
-    public AbstractWebController() {
-    }
+    @Autowired
+    private SpecificationFactory specificationFactory;
 
     @Override
     public void init(ICRUDRepository<T, ID> repository, Class<T> clazz, Class<ID> idClazz) {
@@ -86,24 +87,29 @@ public abstract class AbstractWebController<T, ID extends Serializable> implemen
         return repo.getOne(id);
     }
 
+    @RequestMapping(value = "/search/deep", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<T> deepSearch(@RequestParam(value = "query") String string, @RequestParam(value = "depth") @Valid @Min(0) Integer depth, Pageable pageable) {
+        return repo.findAll(Specification.where(specificationFactory.deepSearch(string, clazz, depth)), pageable);
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> search(@RequestParam(value = "query") String string) {
-        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)));
+        return repo.findAll(Specification.where(specificationFactory.search(string, clazz)));
     }
 
     @RequestMapping(value = "/search/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> searchPage(@RequestParam(value = "query") String string, Pageable pageable) {
-        return repo.findAll(Specification.where(SpecificationFactory.containsTextInAttributes(string, clazz)), pageable);
+        return repo.findAll(Specification.where(specificationFactory.search(string, clazz)), pageable);
     }
 
     @RequestMapping(value = "/filter/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> filter(@RequestParam(value = "query") String string) {
-        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)));
+        return repo.findAll(Specification.where(specificationFactory.filterQuery(string, clazz)));
     }
 
     @RequestMapping(value = "/filter/page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<T> filterPage(@RequestParam(value = "query") String string, Pageable pageable) {
-        return repo.findAll(Specification.where(SpecificationFactory.filterQuery(string, clazz)), pageable);
+        return repo.findAll(Specification.where(specificationFactory.filterQuery(string, clazz)), pageable);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -23,6 +23,14 @@ public class AppUserService {
         admin.setLogin("admin");
         admin.setPassword("admin");
         addEntity(admin);
+
+        AppUser user = new AppUser();
+        admin.setId(1001L);
+        admin.setAlias("user");
+        admin.setRole("ROLE_USER");
+        admin.setLogin("user");
+        admin.setPassword("user");
+        addEntity(admin);
     }
     //----
 

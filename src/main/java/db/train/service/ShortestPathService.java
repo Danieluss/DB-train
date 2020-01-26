@@ -8,10 +8,8 @@ import db.train.persistence.model.join.StationsConnections;
 import db.train.web.dto.StationList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
-import org.webrepogen.annotations.ServicePackage;
 
 import java.time.LocalTime;
 import java.util.*;
