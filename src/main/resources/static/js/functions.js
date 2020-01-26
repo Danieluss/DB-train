@@ -24,6 +24,11 @@ function loadMenu() {
     $("#sideMenu").html(txt)
 }
 
+function welcomePage() {
+    var txt = "<h1>Welcome in trains management system</h1><p>Use menu to find the appropriate page.<p>"
+    $("#mainContent").html(txt)
+}
+
 function errorPage() {
     var txt = "<h1>Sorry, this page does not exist. Use menu to find the appropriate page.</h1>"
     $("#mainContent").html(txt)
@@ -40,6 +45,8 @@ function loadContent() {
         loadEdit(name, id)
     } else if(action == "list") {
         loadList(name)
+    } else if(action == null) {
+        welcomePage()
     } else {
         errorPage()
     }
@@ -58,4 +65,17 @@ function postJson(url, data, success, error) {
         success: success,
         error: error
     })
+}
+
+function showRecurrentValue(htmlId, value, params) {
+    console.log(htmlId, value, params)
+    if(params.length == 0) {
+        insertHtml(htmlId, value)
+    } else if(Array.isArray(value) || typeof value === "object") {
+        showRecurrentValue(htmlId, value[params[0]], params.slice(1))
+    } else {
+        $.get(api + params[0] + "/get/" + value, function(data){
+            showRecurrentValue(htmlId, data, params.slice(1))
+        })
+    }
 }

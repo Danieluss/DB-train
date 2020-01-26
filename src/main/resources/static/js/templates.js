@@ -2,8 +2,8 @@ menu = ["station", "edge", "connection", "train", "carriage", "carriagetype", "z
 
 lists = {}
 lists["station"] = [["name"]]
-lists["edge"] = [["id"]]
-// lists["connection"] = [["stations", 0, "station", "name"], "-", ["stations", -1, "station", "name"]]
+lists["edge"] = [["id"], ["station1", "station", "name"], "-", ["station2", "station", "name"]]
+// lists["connection"] = [["id"], ["stations", 0, "station", "name"], "-", ["stations", -1, "station", "name"]]
 lists["connection"] = [["id"]]
 lists["train"] = [["name"]]
 lists["carriage"] = [["id"]]
@@ -22,6 +22,7 @@ edit["station"] = [
     {name: "name", type: "text"},
     {name: "latitude", type: "number", step: "0.0001", min: "-90", max: "90"},
     {name: "longitude", type: "number", step: "0.0001", min: "-180", max: "180"},
+    {name: "edges", type: "__showEdges__"}
     // {name: "edges", type: "__list__", 
     //     arr: [
     //         {name: "station2", type: "__search__", object: "station", searchBy: "name", return: "id"},

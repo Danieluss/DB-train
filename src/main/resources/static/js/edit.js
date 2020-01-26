@@ -254,7 +254,8 @@ showSth = {
     __search__: showSearch,
     __usedSearch__: showUsedSearch,
     __list__: showArray,
-    __connectionlist__: showConnectionArray
+    __connectionlist__: showConnectionArray,
+    __showEdges__: showEdges
 }
 
 function insertHtml(htmlId, txt) {

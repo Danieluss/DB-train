@@ -40,7 +40,7 @@ function requestList() {
 }
 
 function getEditLink(id) {
-    params = [
+    var params = [
         {key: "action", value: "edit"},
         {key: "name", value: name},
         {key: "id", value: id}
@@ -65,15 +65,20 @@ function deleteEntry(i) {
     }
 }
 
-function showListEntry(id, entry) {
+function showListEntry(htmlId, id, entry) {
     var txt='<td>'
     for(var i=0; i < lists[name].length; i++) {
         if(i > 0) {
             txt+= " "
         }
         var key = lists[name][i]
+        console.log(key)
         if(Array.isArray(key)) {
-            txt+=entry[key[0]] //TODO nested
+            if(key.length > 1) {
+                txt+=`<span id="${htmlId}-${i}-container"></span>`
+            } else {
+                txt+=entry[key[0]]
+            }
         } else {
             txt+=key
         }
@@ -85,7 +90,14 @@ function showListEntry(id, entry) {
     txt+='<td>'
     txt+='<a href="#" onclick="deleteEntry(' + id + ')" title="Delete">' + getIcon("delete") + '</a>'
     txt+='</td>'
-    return txt
+    $("#"+htmlId).html(txt)
+    console.log(txt)
+    for(var i=0; i < lists[name].length; i++) {
+        var key = lists[name][i]
+        if(Array.isArray(key) && key.length > 1) {
+            showRecurrentValue(`${htmlId}-${i}`, entry[key[0]], key.slice(1))
+        }
+    }
 }
 
 function showList() {
@@ -93,8 +105,7 @@ function showList() {
     if(obj.length > 0) {
         txt+="<table>"
         for(var i=0; i < obj.length; i++) {
-            txt+='<tr>'
-            txt+=showListEntry(i, obj[i])
+            txt+=`<tr id="entry-${i}">`
             txt+='</tr>'
         }
         txt+='</table>'
@@ -106,6 +117,9 @@ function showList() {
     if(page < totalPages-1)
         txt+='<a href="#" id="nextPage" title="Next page">' + getIcon("navigate_next") + '</a>'
     $("#list").html(txt)
+    for(var i=0; i < obj.length; i++) {
+        showListEntry(`entry-${i}`, i, obj[i])
+    }
     if(page > 0) {
         $("#previousPage").on("click", function(){
             page--

@@ -182,3 +182,21 @@ function saveConnectionArray() {
         })
     }
 }
+
+function showEdges(htmlId, value, params) {
+    var txt="<p>Edges</p>"
+    txt+="<table>";
+    for(var i=0; i < value.length; i++) {
+        var p = [
+            {key: "action", value: "edit"},
+            {key: "name", value: "edge"},
+            {key: "id", value: id}
+        ]
+        txt+=`<tr><td id="edge-${i}-container"></td><td><a href='${createUrl(p)}'>${getIcon("edit")}</a></td></tr>`
+    }
+    txt+='</table>'
+    insertHtml(htmlId, txt)
+    for(var i=0; i < value.length; i++) {
+        showRecurrentValue(`edge-${i}`, value[i], ["edge", "station2", "station", "name"])
+    }
+}
