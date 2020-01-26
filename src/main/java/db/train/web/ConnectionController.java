@@ -2,8 +2,12 @@ package db.train.web;
 
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
+import db.train.persistence.model.join.StationsConnections;
+import db.train.repository.StationRepository;
 import db.train.service.ShortestPathService;
 import db.train.web.dto.StationList;
+import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,17 +35,15 @@ public class ConnectionController extends AbstractWebController<Connection, Long
 	}
 
 	@RequestMapping(value = "/generate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Connection generate(@RequestBody @Valid StationList stationList) {
+	public List<StationsConnections> generate(@RequestBody @Valid StationList stationList) {
 		List<Station> fetchedStations = new ArrayList<>();
 		for (int i = 0; i < stationList.getStations().size(); i++) {
 			fetchedStations.add(
 					stationRepository
-							.findById(stationList.getStations().get(i).getId())
+							.findById(stationList.getStations().get(i))
 							.orElse(null));
 		}
-		stationList.setStations(fetchedStations);
-		Connection connection = service.connect(stationList);
-		return repo.save(connection);
+		return service.connect(fetchedStations);
 	}
 
 }

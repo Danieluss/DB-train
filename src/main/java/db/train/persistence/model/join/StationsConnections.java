@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -17,6 +19,8 @@ import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Map;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @Entity

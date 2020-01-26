@@ -35,7 +35,7 @@ edit["edge"] = [
     {name: "id", type: "__info__"},
     {name: "station1", type: "__search__", object: "station", searchBy: "name", return: "id"},
     {name: "station2", type: "__search__", object: "station", searchBy: "name", return: "id"},
-    {name: "distance", type: "number", step: "1", min: "0", max: "40000000"},
+    {name: "distance", type: "number", step: "0.001", min: "0", max: "40000"},
 ]
 edit["connection_new"] = [
     {name: "stations", type: "__list__",
@@ -49,11 +49,14 @@ edit["connection"] = [
     {name: "id", type: "__info__"},
     {name: "name", type: "text"},
     {name: "departure", type: "time"},
-    {name: "stations", type: "__list__",
+    {name: "stations", type: "__connectionlist__",
         arr: [
             {name: "stop", type: "checkbox"},
+            {name: "", type: "__usedSearch__", object: "station", searchBy: "name", return: "id"},
             {name: "stopTime", type: "time"},
-        ]
+            {name: "arrival", type: "__info__"},
+            {name: "departure", type: "__info__"}
+        ],
     },
     {name: "trains", type: "__list__", 
         arr: [
@@ -108,7 +111,11 @@ edit["pathticket"] = [
     {name: "uuid", type: "__info__"},
     {name: "trainUser", type: "__search__", object: "trainuser", searchBy: "email", return: "id"},
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
-    {name: "price", type: "number", min: "0", step: "0.01"}
+    {name: "price", type: "number", min: "0", step: "0.01"},
+    {name: "connection", type: "__search__", object: "connection", searchBy: "id", return: "id"},
+    {name: "", type: "number", min: "0"},
+    {name: "", type: "number", min: "0"},
+    // {name: "validate", type: "__validate__", action: function()}
 ]
 edit["commutationticket"] = [
     {name: "uuid", type: "__info__"},
