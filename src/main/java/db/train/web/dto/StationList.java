@@ -15,7 +15,6 @@ import java.util.List;
 public class StationList {
 
     @Size(min = 2)
-    private List<Station> stations;
-    private Connection data;
+    private List<Long> stations;
 
 }

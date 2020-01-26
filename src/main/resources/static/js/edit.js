@@ -1,4 +1,8 @@
 function loadEdit() {
+    if(name == "connection") {
+        showConnectionForm()
+        return
+    }
     err = {}
     if(id != 0) {
         var url = api+name+"/get/" + id
@@ -240,7 +244,9 @@ showSth = {
     checkbox: showInput,
     date: showInput,
     __search__: showSearch,
-    __list__: showArray
+    __usedSearch__: showUsedSearch,
+    __list__: showArray,
+    __connectionlist__: showConnectionArray
 }
 
 function insertHtml(htmlId, txt) {
@@ -304,13 +310,15 @@ getSth = {
     checkbox: getInput,
     date: getInput,
     __search__: getSearch,
-    __list__: getArray
+    __usedSearch__: undefined,
+    __list__: getArray,
+    __connectionlist__: getConnectionArray,
 }
 
 function getObject(htmlId, value, params) {
     for(var i=0; i < params.length; i++) {
         var newHtmlId = htmlId + "-" + params[i].name
-        if(params[i].type == "__info__") {
+        if(getSth[params[i].type] == undefined) {
             continue;
         }
         if(params[i].type == "__list__") {
