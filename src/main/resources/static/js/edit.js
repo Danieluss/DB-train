@@ -152,7 +152,7 @@ function showObject(htmlId, value, params) {
     for(var i=0; i < params.length; i++) {
         var curId = htmlId+"-"+params[i].name
         txt+=`<div id='${curId}-container'></div>`
-        txt+=`<div id=${curId}-error></div>`
+        txt+=`<div id=${curId}-error class="err"></div>`
     }
     insertHtml(htmlId, txt)
     for(var i=0; i < params.length; i++) {
@@ -265,8 +265,8 @@ function insertHtml(htmlId, txt) {
 
 function showEditForm() {
     var txt = `<h1>${id == 0 ? "Add" : "Edit"} ${name}</h1>`
-    txt+=`<div id='${name}-container'></div>`
-    txt+='<div id="general-error"></div>'
+    txt+=`<div class="form-group" id='${name}-container'></div>`
+    txt+='<div id="general-error" class="err"></div>'
     txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
@@ -354,7 +354,7 @@ function submitEditForm() {
         postJson(api+name+"/upsert/", obj, function(data) {
             obj = data
             console.log(obj)
-            if(name.includes("ticket")) {
+            if(name == "pathticket" || name == "commutationticket") {
                 id = data.uuid
             } else {
                 id = data.id

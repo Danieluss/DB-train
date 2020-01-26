@@ -323,15 +323,12 @@ th {
 th, td {
 	padding: 5px;
 }
-tr:nth-child(even)
-{
+tr:nth-child(even), arr:nth-child(even){
 	background-color: #eeeeee;
 }
 tr:hover {
 	background-color:#b6d8fc;
 }
-
-
 
 #loginOuter {
 	width: 100%;
@@ -435,6 +432,6 @@ tr:hover {
 	padding: 0 5px;
 }
 
-.flexContainer {
-	
+.err {
+	color: #d44950;
 }

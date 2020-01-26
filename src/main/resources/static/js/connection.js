@@ -61,7 +61,7 @@ function showConnectionArray(htmlId, value, params) {
     for(var i=0; i < value.length; i++) {
         var curId = htmlId+"-"+i
         txt+='<div>'
-        txt+=`<div id='${curId}-container'></div>`
+        txt+=`<div class="form-row" id='${curId}-container'></div>`
         txt+='</div>'
     }
     txt+='</div>'

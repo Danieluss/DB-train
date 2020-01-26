@@ -1,4 +1,17 @@
-menu = ["station", "edge", "connection", "train", "carriage", "carriagetype", "zone", "discount", "trainuser", "pathticket", "commutationticket"]
+menu = [
+    ["station", "Stations"],
+    ["edge", "Edges"],
+    ["connection", "Connections"],
+    ["train", "Trains"],
+    ["carriage", "Carriages"],
+    ["carriagetype", "Carriage types"],
+    ["zone", "Zones"],
+    ["commutationtickettype", "Ticket types"],
+    ["discount", "Discounts"],
+    ["trainuser", "Users"],
+    ["pathticket", "Path tickets"],
+    ["commutationticket", "Commutation tickets"]
+]
 
 lists = {}
 lists["station"] = [["name"]]
@@ -14,7 +27,7 @@ lists["trainuser"] = [["name"], ["surname"]]
 lists["ticket"] = [["uuid"]]
 lists["pathticket"] = [["uuid"]]
 lists["commutationticket"] = [["uuid"]]
-lists["commutationtickettype"] = [["name"]]
+lists["commutationtickettype"] = [["name"], ["zone"], ["zone", "zone", "name"]]
 
 edit = {}
 edit["station"] = [
@@ -92,6 +105,12 @@ edit["zone"] = [
             {name: "", type: "__search__", object: "connection", searchBy: "id", return: "id"}
         ]
     }
+]
+edit["commutationtickettype"] = [
+    {name: "id", type: "__info__"},
+    {name: "name", type: "text"},
+    {name: "price", type: "number", min:"0"},
+    {name: "zone", type: "__search__", object: "zone", searchBy: "name", return: "id"}
 ]
 edit["discount"] = [
     {name: "id", type: "__info__"},

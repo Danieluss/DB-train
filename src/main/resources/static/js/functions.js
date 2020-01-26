@@ -14,9 +14,9 @@ function loadMenu() {
     var txt="<ul>"
     for(var i=0; i < menu.length; i++) {
         txt+="<li>"
-        params = [{key: "action", value: "list"}, {key: "name", value: menu[i]}]
+        params = [{key: "action", value: "list"}, {key: "name", value: menu[i][0]}]
         txt+="<a href='" + createUrl(params) + "'>"
-        txt+=menu[i] + "s"
+        txt+=menu[i][1]
         txt+="</a>"
         txt+="</li>"
     }
