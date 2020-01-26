@@ -83,7 +83,7 @@ h3 {
 }
 a {
 	text-decoration: none;
-	color: #ffa000;
+	color: #007bff;
 }
 a:hover {
 	text-decoration: underline;
@@ -170,7 +170,7 @@ a:hover {
 	cursor: pointer;
 }
 .tableboxElem:hover {
-	background-color: #ffd58e;
+	background-color: #b6d8fc;
 }
 /*tables end*/
 /* layout */
@@ -293,7 +293,7 @@ body {
 	color: #ffffff;
 }
 #sideMenu a:hover, #sideMenu a:active {
-	color: #ffa000;
+	color: #b6d8fc;
 	text-decoration: none;
 	background-color: #606060;
 }
@@ -328,57 +328,11 @@ tr:nth-child(even)
 	background-color: #eeeeee;
 }
 tr:hover {
-	background-color: #ffd58e;
+	background-color:#b6d8fc;
 }
 
-#mceu_17 {
-	border: 2px solid #cccccc !important;
-	border-radius: 8px;
-	overflow: hidden;
-}
 
-input[type=text], textarea, input[type=password], input[type=number], select {
-	width: 100%;
-	padding: 10px;
-	font-family: Arial, sans-serif;
-	font-size: 15px;
-	background-color: #ffffff;
-	border: 2px solid #cccccc;
-	border-radius: 8px;
-}
-textarea {
-	resize: none;
-	line-height: 1.4;
-}
-input[type=text]:focus, textarea:focus, input[type=password]:focus, input[type=number]:focus, select:focus {
-	outline: none;
-	border-color: #ffa000;
-}
-button, input[type=submit], .closingButton, .nextButton, .prevButton {
-	font-size: 15px;
-	color: #ffffff;
-	text-align: center;
-	text-decoration: none;
-	outline: none;
-	padding: 5px 20px;
-	background-color: #ff8000;
-	border-top: 2px solid #cccccc;
-	border-left: 2px solid #cccccc;
-	border-right: 2px solid #4d4d4d;
-	border-bottom: 2px solid #4d4d4d;
-	border-radius: 5px;
-	cursor: pointer;
-}
-input[type=submit]:active, button:active, .closingButton:active, .nextButton:active, .prevButton:active  {
-	outline: none;
-	border-right: 2px solid #cccccc;
-	border-bottom: 2px solid #cccccc;
-	border-top: 2px solid #4d4d4d;
-	border-left: 2px solid #4d4d4d;
-}
-input.postImage {
-	display: none;
-}
+
 #loginOuter {
 	width: 100%;
 	height: 100vh;
@@ -431,7 +385,7 @@ input.postImage {
 	margin-bottom: 10px;
 }
 .menuElemContainer:hover {
-	background-color: #ffd58e;
+	background-color: #b6d8fc;
 }
 .menuCol25 {
 	display: inline-block;
@@ -479,4 +433,8 @@ input.postImage {
 	display: inline-block;
 	width: 50%;
 	padding: 0 5px;
+}
+
+.flexContainer {
+	
 }

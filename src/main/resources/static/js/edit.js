@@ -51,9 +51,9 @@ function showInfo(htmlId, value, params) {
 
 function showInput(htmlId, value, params) {
     var txt=""
-    txt+= `<p>${params.name}</p>`
+    txt+= `<label for='${htmlId}'>${params.name}</label>`
     keys = Object.keys(params)
-    txt+="<input"
+    txt+="<input class='form-control' id='${htmlId}'"
     for(var i=0; i < keys.length; i++) {
         var key = keys[i]
         if(key == "name") {
@@ -80,8 +80,8 @@ function showSearch(htmlId, value, params) {
     var previousQuery = undefined
     console.log(htmlId)
     var txt = ""
-    txt+= `<p>${params.name}</p>`
-    txt+= `<input name='${htmlId}' list='${htmlId}-datalist'/>`
+    txt+= `<label for='${htmlId}'>${params.name}</label>`
+    txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
     txt+= `<datalist id='${htmlId}-datalist'></datalist>`
     insertHtml(htmlId, txt)
     $(`[name='${htmlId}']`).bind("keyup input", function() {
@@ -167,13 +167,14 @@ function showObject(htmlId, value, params) {
 }
 
 function showArray(htmlId, value, params) {
-    var txt=`<div><p>${params.name}</p>`
+    var txt=`<p>${params.name}</p>`
+    txt+=`<div class="form-row">`
     txt+=`<div id='${htmlId}-new-container'></div>`
     txt+=`<a id='${htmlId}_new' href="#" title="Add">${getIcon("add")}</a>`
     txt+="</div>"
     for(var i=0; i < value.length; i++) {
         var curId = htmlId+"-"+i
-        txt+='<div>'
+        txt+='<div class="form-row">'
         txt+=`<div id='${curId}-container'></div>`
         if(params.swapping) {
             if(i > 0) {
@@ -266,7 +267,7 @@ function showEditForm() {
     var txt = `<h1>${id == 0 ? "Add" : "Edit"} ${name}</h1>`
     txt+=`<div id='${name}-container'></div>`
     txt+='<div id="general-error"></div>'
-    txt+=`<button onclick="submitEditForm()">Submit</button>`
+    txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
     showObject(name, obj, edit[name])
@@ -353,14 +354,17 @@ function submitEditForm() {
         postJson(api+name+"/upsert/", obj, function(data) {
             obj = data
             console.log(obj)
-            id = data.id
+            if(name.includes("ticket")) {
+                id = data.uuid
+            } else {
+                id = data.id
+            }
             if(name == "connection") {
                 saveConnectionArray()
                 return
             }
             var url = new URL(location.href)
             url.searchParams.set('id', id)
-            alert("LOCK")
             if(location.href != url.href) {
                 location.href = url.href
             } else {

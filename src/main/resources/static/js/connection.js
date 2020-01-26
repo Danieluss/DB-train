@@ -49,6 +49,12 @@ function showConnectionArray(htmlId, value, params) {
         for(var i=0; i < stationsconnections.length; i++) {
             obj.stations[i] = (stationsconnections[i].id)
         }
+        recurrentCallback(function(res){
+            obj.firstStation = res
+        }, stationsconnections[0].station, ["station", "name"])
+        recurrentCallback(function(res){
+            obj.lastStation = res
+        }, stationsconnections[stationsconnections.length-1].station, ["station", "name"])
     }
     var txt=`<div><p>${params.name}</p>`
     txt+=`<div id="${htmlId}-departure-container"></div>`
@@ -88,11 +94,11 @@ function showConnectionForm() {
     var txt = `<h1>${id == 0 ? "Add" : "Edit"} ${name}</h1>`
     if(id == 0) {
         txt+=`<div id="new-connection-container"></div>`
-        txt+=`<button onclick="generateConnection()">Generate</button>`
+        txt+=`<button class="btn btn-primary" onclick="generateConnection()">Generate</button>`
     }
     txt+=`<div id="connection-container"></div>`
     if(obj != undefined) {
-        txt+=`<button onclick="submitEditForm()">Submit</button>`
+        txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     }
     txt+=`<div id="general-error"></div>`
     $("#mainContent").html(txt)

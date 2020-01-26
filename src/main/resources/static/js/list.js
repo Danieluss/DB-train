@@ -3,7 +3,7 @@ function loadList() {
     txt+=`<a href='${getEditLink(0)}' title='add new'>${getIcon("add")}</a>`
     txt+="<div id='search'>"
     txt+="<p>Search:</p>"
-    txt+="<input type='text' id='searchBar'/>"
+    txt+="<input class='form-control' type='text' id='searchBar'/>"
     txt+="</div>"
     txt+="<div id='list'></div>"
     $("#mainContent").html(txt)

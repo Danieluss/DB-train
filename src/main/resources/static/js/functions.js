@@ -67,15 +67,21 @@ function postJson(url, data, success, error) {
     })
 }
 
-function showRecurrentValue(htmlId, value, params) {
-    console.log(htmlId, value, params)
+function recurrentCallback(callback, value, params) {
+    console.log(value, params)
     if(params.length == 0) {
-        insertHtml(htmlId, value)
+        callback(value)
     } else if(Array.isArray(value) || typeof value === "object") {
-        showRecurrentValue(htmlId, value[params[0]], params.slice(1))
+        recurrentCallback(callback, value[params[0]], params.slice(1))
     } else {
         $.get(api + params[0] + "/get/" + value, function(data){
-            showRecurrentValue(htmlId, data, params.slice(1))
+            recurrentCallback(callback, data, params.slice(1))
         })
     }
+}
+
+function showRecurrentValue(htmlId, value, params) {
+    recurrentCallback(function(res){
+        insertHtml(htmlId, res)
+    }, value, params)
 }
