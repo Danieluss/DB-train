@@ -1,6 +1,7 @@
 package db.train.web;
 
 import db.train.repository.SpecificationFactory;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +24,11 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 public abstract class AbstractWebController<T, ID extends Serializable> implements ICRUDController<T, ID> {
 
-    protected ICRUDRepository<T, ID> repo;
     private Map<String, String> fields;
+    private ICRUDRepository<T, ID> repo;
     private Class<T> clazz;
     private Class<ID> idClazz;
 

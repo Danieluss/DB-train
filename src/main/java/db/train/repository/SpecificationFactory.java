@@ -1,5 +1,8 @@
 package db.train.repository;
 
+import db.train.persistence.model.Connection;
+import db.train.persistence.model.Station;
+import db.train.persistence.model.join.StationsConnections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
@@ -88,6 +91,7 @@ public class SpecificationFactory {
     public <T> Specification<T> deepSearch(String string, Class<T> clazz, Integer depth) {
         String finalText = "%" + string + "%";
         return (root, query, builder) -> {
+            query.distinct(true);
             Set<EntityType> joinedTypes = new HashSet<>();
             List<Pair<Attribute, EntityType>> toJoin = new ArrayList<>();
             List<Pair<Attribute, EntityType>> toJoinNew = new ArrayList<>();
@@ -151,4 +155,5 @@ public class SpecificationFactory {
             return builder.or(predicates.toArray(Predicate[]::new));
         };
     }
+
 }

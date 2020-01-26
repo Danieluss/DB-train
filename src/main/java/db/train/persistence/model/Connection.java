@@ -42,6 +42,10 @@ public class Connection {
     @Id
     private Long id;
     @Column(nullable = false)
+    private String firstStation;
+    @Column(nullable = false)
+    private String lastStation;
+    @Column(nullable = false)
     @NotBlank
     private String name;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")

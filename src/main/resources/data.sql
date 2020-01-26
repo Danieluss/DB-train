@@ -5,7 +5,7 @@ INSERT INTO edge(id, station1_id, station2_id, distance) VALUES (1, 1, 2, 300.0)
 INSERT INTO carriage_type(id, seats, cabin) VALUES (1, 40, true) ON CONFLICT DO NOTHING;
 INSERT INTO train(id, name) VALUES (1, 'Pegazus') ON CONFLICT DO NOTHING;
 INSERT INTO carriage(id, train_id, type_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
-INSERT INTO connection(id, name) VALUES (1, 'Poznaniak') ON CONFLICT DO NOTHING;
+INSERT INTO connection(id, first_station, last_station, name) VALUES (1, 'Poznań', 'Warszawa', 'Poznaniak') ON CONFLICT DO NOTHING;
 INSERT INTO stations_connections(id, station_id, connection_id, number, stop, arrival, departure) VALUES (1, 1, 1, 1, true, '10:00', '10:20') ON CONFLICT DO NOTHING;
 INSERT INTO stations_connections(id, station_id, connection_id, number, stop, arrival, departure) VALUES (2, 2, 1, 2, true, '15:34', '15:55') ON CONFLICT DO NOTHING;
 INSERT INTO trains_connections(train_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;

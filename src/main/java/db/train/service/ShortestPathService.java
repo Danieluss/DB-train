@@ -21,9 +21,9 @@ public class ShortestPathService {
     @AllArgsConstructor
     @Data
     private static class Node implements Comparable<Node> {
-        double distance;
-        Station station;
-        Station previousStation;
+        private double distance;
+        private Station station;
+        private Station previousStation;
         @Override
         public int compareTo(Node node) {
             double diff = node.distance-distance;
