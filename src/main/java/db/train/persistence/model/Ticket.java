@@ -42,10 +42,6 @@ public class Ticket {
     @Id
     @Column(columnDefinition = "UUID")
     private UUID uuid;
-    @Column(nullable = false)
-    @DecimalMin("0")
-    @DecimalMax("100000")
-    private Double price;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne

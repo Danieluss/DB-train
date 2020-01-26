@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.util.Date;
 import java.util.Map;
 
@@ -34,6 +36,10 @@ public class PathTicket extends Ticket {
         return TOOLTIPS;
     }
 
+    @Column(nullable = false)
+    @DecimalMin("0")
+    @DecimalMax("100000")
+    private Double price;
     @Column(nullable = false)
     private Date date;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
