@@ -1,8 +1,8 @@
 package db.train.repository;
 
-import db.train.persistence.model.Connection;
-import db.train.persistence.model.Station;
-import db.train.persistence.model.join.StationsConnections;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -25,6 +26,15 @@ import java.util.stream.Collectors;
 @Service
 //TODO refactor - add wildcards, common method for search, optimization
 public class SpecificationFactory {
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    private static class FromAttributeEntity {
+        private From from;
+        private Attribute attribute;
+        private EntityType entityType;
+    }
 
     private EntityManager entityManager;
 
@@ -93,46 +103,51 @@ public class SpecificationFactory {
         return (root, query, builder) -> {
             query.distinct(true);
             Set<EntityType> joinedTypes = new HashSet<>();
-            List<Pair<Attribute, EntityType>> toJoin = new ArrayList<>();
-            List<Pair<Attribute, EntityType>> toJoinNew = new ArrayList<>();
-            List<Pair<Join, Set<SingularAttribute>>> joins = new ArrayList<>();
+            List<FromAttributeEntity> toJoin = new ArrayList<>();
+            List<FromAttributeEntity> toJoinNew = new ArrayList<>();
+            List<Pair<From, Set<SingularAttribute>>> joins = new ArrayList<>();
+            joinedTypes.add(entityManager.getMetamodel().entity(clazz));
             root.getModel()
                     .getSingularAttributes()
                     .stream()
                     .filter(a -> a.getType().getJavaType().getAnnotation(Entity.class) != null)
-                    .forEach(a -> toJoin.add(Pair.of(a, entityManager.getMetamodel().entity(a.getType().getJavaType()))));
+                    .forEach(a -> toJoin.add(new FromAttributeEntity(root, a, entityManager.getMetamodel().entity(a.getType().getJavaType()))));
             root.getModel()
                     .getPluralAttributes()
                     .stream()
                     .filter(a -> a.getElementType().getJavaType().getAnnotation(Entity.class) != null)
-                    .forEach(a -> toJoin.add(Pair.of(a, entityManager.getMetamodel().entity(a.getElementType().getJavaType()))));
+                    .forEach(a -> toJoin.add(new FromAttributeEntity(root, a, entityManager.getMetamodel().entity(a.getElementType().getJavaType()))));
             for(int i = 0; i < depth; i++) {
-                for (var pair : toJoin) {
-                    if(!joinedTypes.contains(pair.getSecond())) {
+                for (var triple : toJoin) {
+                    if(!joinedTypes.contains(triple.getEntityType())) {
                         Join join = null;
-                        if (pair.getFirst() instanceof SingularAttribute) {
-                            join = root.join((SingularAttribute) pair.getFirst(), JoinType.LEFT);
-                        } else if (pair.getFirst() instanceof ListAttribute) {
-                            join = root.join((ListAttribute) pair.getFirst(), JoinType.LEFT);
-                        } else if (pair.getFirst() instanceof CollectionAttribute) {
-                            join = root.join((CollectionAttribute) pair.getFirst(), JoinType.LEFT);
-                        } else if (pair.getFirst() instanceof SetAttribute) {
-                            join = root.join((SetAttribute) pair.getFirst(), JoinType.LEFT);
-                        } else if (pair.getFirst() instanceof MapAttribute) {
-                            join = root.join((MapAttribute) pair.getFirst(), JoinType.LEFT);
+                        Attribute attribute = triple.getAttribute();
+                        From from = triple.getFrom();
+                        EntityType entityType = triple.getEntityType();
+                        if (attribute instanceof SingularAttribute) {
+                            join = from.join((SingularAttribute) attribute, JoinType.LEFT);
+                        } else if (attribute instanceof ListAttribute) {
+                            join = from.join((ListAttribute) attribute, JoinType.LEFT);
+                        } else if (attribute instanceof CollectionAttribute) {
+                            join = from.join((CollectionAttribute) attribute, JoinType.LEFT);
+                        } else if (attribute instanceof SetAttribute) {
+                            join = from.join((SetAttribute) attribute, JoinType.LEFT);
+                        } else if (attribute instanceof MapAttribute) {
+                            join = from.join((MapAttribute) attribute, JoinType.LEFT);
                         }
-                        joinedTypes.add(pair.getSecond());
-                        joins.add(Pair.of(join, pair.getSecond().getSingularAttributes()));
-                        pair.getSecond()
+                        joinedTypes.add(entityType);
+                        joins.add(Pair.of(join, entityType.getSingularAttributes()));
+                        Join finalJoin = join;
+                        entityType
                                 .getSingularAttributes()
                                 .stream()
                                 .filter(a -> ((SingularAttribute) a).getType().getJavaType().getAnnotation(Entity.class) != null)
-                                .forEach(a -> toJoinNew.add(Pair.of(((SingularAttribute) a), entityManager.getMetamodel().entity(((SingularAttribute) a).getType().getJavaType()))));
-                        pair.getSecond()
+                                .forEach(a -> toJoinNew.add(new FromAttributeEntity(finalJoin, ((SingularAttribute) a), entityManager.getMetamodel().entity(((SingularAttribute) a).getType().getJavaType()))));
+                        entityType
                                 .getPluralAttributes()
                                 .stream()
                                 .filter(a -> ((PluralAttribute) a).getElementType().getJavaType().getAnnotation(Entity.class) != null)
-                                .forEach(a -> toJoinNew.add(Pair.of(((PluralAttribute) a), entityManager.getMetamodel().entity(((PluralAttribute) a).getElementType().getJavaType()))));
+                                .forEach(a -> toJoinNew.add(new FromAttributeEntity(finalJoin, ((PluralAttribute) a), entityManager.getMetamodel().entity(((PluralAttribute) a).getElementType().getJavaType()))));
                     }
                 }
                 toJoin.clear();
