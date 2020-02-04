@@ -51,7 +51,7 @@ public class CommutationTicket extends Ticket {
         type.setId(id);
     }
 
-    @AssertTrue(message="Arrival should be before")
+    @AssertTrue(message="startDate should be before endDate")
     private boolean isCrossValid() {
         return this.startDate.before(this.endDate);
     }
