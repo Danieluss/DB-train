@@ -41,12 +41,12 @@ public class Edge {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "station1_id")
+    @JoinColumn(name = "station1_id", insertable = false, updatable = false)
     private Station station1;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "station2_id")
+    @JoinColumn(name = "station2_id", insertable = false, updatable = false)
     private Station station2;
 
     @JsonProperty("station1")
