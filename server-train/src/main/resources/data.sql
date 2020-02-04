@@ -9,7 +9,8 @@ INSERT INTO connection(id, first_station, last_station, name) VALUES (1, 'Pozna�
 INSERT INTO stations_connections(id, station_id, connection_id, number, stop, arrival, departure) VALUES (1, 1, 1, 1, true, '10:00', '10:20') ON CONFLICT DO NOTHING;
 INSERT INTO stations_connections(id, station_id, connection_id, number, stop, arrival, departure) VALUES (2, 2, 1, 2, true, '15:34', '15:55') ON CONFLICT DO NOTHING;
 INSERT INTO trains_connections(train_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
-INSERT INTO train_user(id, email, name, surname, username) VALUES (1, 'user@gmail.com', 'Janusz', 'Kowalski', 'JK') ON CONFLICT DO NOTHING;
+INSERT INTO train_user(id, email, name, password, role, surname, username) VALUES (1, 'admin@gmail.com', 'Janusz', '$2a$10$q5vKefZnFSi2PM4gS3s7a.LVC5ijXp0eCjLYYyPMypamZJzpFsXRm', 'ROLE_USER', 'Kowalski', 'user') ON CONFLICT DO NOTHING;
+INSERT INTO train_user(id, email, name, password, role, surname, username) VALUES (2, 'user@gmail.com', 'Janusz', '$2a$10$B86Leqg4lyrroM.bv9OBJupQMPVK8MMA8iW5yllPIKgRFL/f9sKKO', 'ROLE_ADMIN', 'Niekowalski', 'admin') ON CONFLICT DO NOTHING;
 INSERT INTO discount(id, name, percent_off) VALUES (1, 'świąteczna', 25) ON CONFLICT DO NOTHING;
 INSERT INTO ticket(uuid, discount_id, user_id) VALUES ('de644b9b-7744-4dc4-9501-bb0ef0386952', 1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO ticket(uuid, user_id) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 1) ON CONFLICT DO NOTHING;

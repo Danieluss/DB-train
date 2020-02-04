@@ -64,6 +64,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry
                 .addRedirectViewController("/", "/index.html");
+        registry
+                .addRedirectViewController("/client", "/client/index.html");
     }
 
     @Override

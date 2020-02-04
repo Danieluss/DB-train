@@ -1,19 +1,19 @@
-package db.train.persistence.model;
+package db.train.security;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.ImmutableMap;
+import db.train.persistence.model.Ticket;
 import lombok.Getter;
 import lombok.Setter;
+import org.webrepogen.annotations.ExcludedEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Setter
@@ -21,19 +21,21 @@ import java.util.stream.Collectors;
 @Entity
 @SequenceGenerator(name = "train_user_gen", sequenceName = "train_user_seq", initialValue = 1000)
 @Table(indexes = {@Index(columnList = "id", name = "id")})
+@ExcludedEntity
 public class TrainUser {
 
-    private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
-            .put("id", "")
-            .put("username", "Username")
-            .put("email", "Email address")
-            .put("name", "Name")
-            .put("surname", "Surname")
-            .put("tickets", "Owned tickets")
-            .build();
+    public static TrainUser from(TrainUserDTO trainUserDTO) {
+        TrainUser trainUser = new TrainUser();
+        trainUser.setRole("ROLE_USER");
+        trainUser.setTickets(new LinkedList<>());
 
-    public static Map<String, String> getTooltips() {
-        return TOOLTIPS;
+        trainUser.setUsername(trainUserDTO.getUsername());
+        trainUser.setPassword(trainUserDTO.getPassword());
+        trainUser.setEmail(trainUserDTO.getEmail());
+        trainUser.setName(trainUserDTO.getName());
+        trainUser.setSurname(trainUserDTO.getSurname());
+
+        return trainUser;
     }
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "train_user_gen")
@@ -42,14 +44,20 @@ public class TrainUser {
     @NotBlank
     @Column(nullable = false, unique = true)
     private String username;
+    @NotBlank
+    @Column(nullable = false)
+    private String password;
+    @NotBlank
+    @Column(nullable = false)
+    private String role;
     @Email
     @Column(nullable = false, unique = true)
     private String email;
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String surname;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "uuid")
     @JsonIdentityReference(alwaysAsId = true)

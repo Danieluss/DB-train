@@ -12,21 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final AppUserRepository repository;
+    private final TrainUserRepository repository;
 
     @Autowired
-    public UserDetailsServiceImpl(AppUserRepository repository) {
+    public UserDetailsServiceImpl(TrainUserRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String alias) {
-        AppUser user = repository.findByAlias(alias);
+    public UserDetails loadUserByUsername(String username) {
+        TrainUser user = repository.findByUsername(username);
         if (user == null) {
-            throw new RuntimeException(String.format("User, identified by '%s', not found", alias));
+            throw new RuntimeException(String.format("User, identified by '%s', not found", username));
         }
         return new User(
-                user.getAlias(), user.getPassword(),
+                user.getUsername(), user.getPassword(),
                 AuthorityUtils.createAuthorityList(user.getRole()));
     }
 }

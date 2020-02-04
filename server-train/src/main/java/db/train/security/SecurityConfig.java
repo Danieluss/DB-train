@@ -20,11 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .antMatchers("/client/**")
+                .hasRole("USER")
+            .and()
+                .authorizeRequests()
                 .antMatchers("/**")
-                .permitAll()
+                .hasRole("ADMIN")
             .and()
                 .formLogin()
-                .usernameParameter("alias")
+                .usernameParameter("username")
                 .passwordParameter("password")
                 .permitAll()
             .and()
