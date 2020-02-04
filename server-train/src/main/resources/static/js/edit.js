@@ -67,8 +67,10 @@ function showInput(htmlId, value, params) {
             txt+=" checked"
         }
     } else if(params.type == "date") {
-        var d = new Date(value)
-        txt+= `value='${d.toISOString().slice(0, 10)}'`
+        txt+= `value='${new Date(value).toISOString().slice(0, 10)}'`
+    } else if(params.type == "time") {
+        console.log(value)
+        txt+= `value='${new Date(value).toISOString().slice(11, 16)}'`
     } else {
         txt+=`value='${value}'`
     }
@@ -246,7 +248,6 @@ function showArray(htmlId, value, params) {
 
 showSth = {
     __info__: showInfo,
-    __infotime__: showInfoTime,
     text: showInput,
     number: showInput,
     checkbox: showInput,
@@ -277,11 +278,18 @@ function isInvalid(htmlId) {
     return $(`[name='${htmlId}']`).is(":invalid")
 }
 
+function unformatTime(s) {
+    var arr = s.split(":")
+    return parseInt(arr[0])*60+parseInt(arr[1])
+}
 
 function getInput(htmlId, params) {
     var id = `[name=${htmlId}]`
     if(params["type"] == "checkbox") {
         return $(id).is(":checked")
+    } else if(params["type"] == "time") {
+        console.log(($(id).val()))
+        return unformatTime($(id).val())
     } else {
         if(isInvalid(htmlId)) {
             err[htmlId] = `${params.name} has to be a valid ${params.type}`
@@ -319,6 +327,7 @@ getSth = {
     number: getInput,
     checkbox: getInput,
     date: getInput,
+    time: getInput,
     __search__: getSearch,
     __usedSearch__: undefined,
     __list__: getArray,
@@ -360,6 +369,7 @@ function submitEditForm() {
                 id = data.id
             }
             if(name == "connection") {
+                alert("BLOCK")
                 saveConnectionArray()
                 return
             }

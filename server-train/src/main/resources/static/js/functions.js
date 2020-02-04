@@ -57,7 +57,7 @@ function getIcon(icon) {
 }
 
 function postJson(url, data, success, error) {
-    $.ajax({
+    return $.ajax({
         type: "POST",
         contentType:"application/json; charset=utf-8",
         url: url,

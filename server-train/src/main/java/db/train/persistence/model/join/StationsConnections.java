@@ -79,7 +79,7 @@ public class StationsConnections implements Serializable {
         connection.setId(id);
     }
 
-    @AssertTrue(message="Arrival should be before")
+    @AssertTrue(message="Departure should be before arrival")
     private boolean isCrossValid() {
         return (!(this.arrival.isAfter(this.departure)));
     }

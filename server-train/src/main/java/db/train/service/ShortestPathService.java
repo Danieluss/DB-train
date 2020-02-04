@@ -27,7 +27,7 @@ public class ShortestPathService {
         @Override
         public int compareTo(Node node) {
             double diff = node.distance-distance;
-            return diff > 0.1 ? 1 : (diff < -0.1 ? -1 : 0);
+            return diff > 0.001 ? -1 : (diff < -0.001 ? 1 : 0);
         }
     }
 

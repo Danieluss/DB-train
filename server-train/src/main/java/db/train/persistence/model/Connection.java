@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Date;
+import javax.validation.constraints.AssertTrue;
 
 @Setter
 @Getter
@@ -57,6 +59,10 @@ public class Connection {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection", cascade = CascadeType.REMOVE)
     @OrderBy(value = "number")
     private List<StationsConnections> stations;
+    @Column(nullable = false)
+    private Date firstDay;
+    @Column(nullable = false)
+    private Date lastDay;
 
     @JsonProperty("trains")
     public void setTrains(List<Long> ids) {
@@ -87,6 +93,11 @@ public class Connection {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @AssertTrue(message="First day should be before last day.")
+    private boolean isCrossValid() {
+        return (this.firstDay.compareTo(this.lastDay) <= 0);
     }
 
 }

@@ -26,25 +26,15 @@ function loadConnection() {
     }
 }
 
-function getTime(t) {
-    return new Date(t).toISOString().slice(11, 16)
-}
-
-function showInfoTime(htmlId, value, params) {
-    var txt=""
-    var t = value[0]*1000*3600+value[1]*1000*60
-    txt+=`<p>${params.name}: ${getTime(t)}</p>`
-    insertHtml(htmlId, txt)
-}
-
 function prepareStationsConnections(sc) {
-    var dt = sc.departure[0]*60+sc.departure[1]-sc.arrival[0]*60-sc.arrival[1]
-    sc.stopTime = dt
-    console.log(sc.stop)
+    sc.departure_time = arrToTime(sc.departure)
+    sc.arrival_time = arrToTime(sc.arrival)
+    console.log(sc)
     return sc
 }
 
 function showConnectionArray(htmlId, value, params) {
+    console.log("before: ", stationsconnections)
     if(value.length <= stationsconnections.length) {
         for(var i=0; i < stationsconnections.length; i++) {
             obj.stations[i] = (stationsconnections[i].id)
@@ -56,6 +46,7 @@ function showConnectionArray(htmlId, value, params) {
             obj.lastStation = res
         }, stationsconnections[stationsconnections.length-1].station, ["station", "name"])
     }
+    console.log("after: ", stationsconnections)
     var txt=`<div><p>${params.name}</p>`
     txt+=`<div id="${htmlId}-departure-container"></div>`
     for(var i=0; i < value.length; i++) {
@@ -83,9 +74,6 @@ function showConnectionArray(htmlId, value, params) {
     }
     function showStationConnection(id) {
         stationsconnections[id] = prepareStationsConnections(stationsconnections[id])
-        if(id == 0) {
-            showInput(htmlId+"-departure", getTime(arrToTime(stationsconnections[id].departure)*60*1000), params.departure)
-        }
         showObject(htmlId+"-"+id, stationsconnections[id], params.arr)
     }
 }
@@ -120,6 +108,7 @@ function generateConnection() {
     if($.isEmptyObject(err)) {
         console.log(obj)
         postJson(api+"connection/generate", stations, function(data) {
+            console.log(stationsconnections, data)
             stationsconnections = data
             $.get(api+"connection/fields", function(data) {
                 obj = getDefaultObject(data)
@@ -138,54 +127,67 @@ function generateConnection() {
 }
 
 function arrToTime(arr) {
-    return arr[0]*60+arr[1]
+    return parseInt(arr[0])*1000*3600+parseInt(arr[1])*1000*60
 }
 
 function timeToArr(t) {
+    var mod = 60*24
+    t = (t%mod+mod)%mod
     console.log(t)
     return [Math.floor(t/60), t%60]
 }
 
-function unformatTime(s) {
-    var arr = s.split(":")
-    return parseInt(arr[0])*60+parseInt(arr[1])
+function isAfter(a, b) {
+    var mod = 60*24
+    return ((b-a)%mod+mod)%mod > mod/2
 }
 
 function getConnectionArray(htmlId, value, params) {
-    var dt=0
     for(var i=0; i < stationsconnections.length; i++) {
         var sc = stationsconnections[i]
         var curId = htmlId+"-"+i
-        sc.stop = getInput(curId+"-stop", params.arr[0])
-        console.log("sc.stop:", sc.stop)
-        var dep = arrToTime(sc.departure)
-        var arr = arrToTime(sc.arrival)
-        sc.stopTime = getInput(curId+"-stopTime", params.arr[3])
-        if(i == 0) {
-            var t = unformatTime(getInput(htmlId+"-departure", params.departure))
-            dt = t-dep
-            dt-=sc.stopTime-(dep-arr)
+        getObject(curId, sc, params.arr)
+        if(i > 0 && true == isAfter(stationsconnections[i-1].departure_time, sc.arrival_time)) {
+            err[curId+"-arrival_time"] = "Train cannot come to the next station before leaving the previous one."
         }
-        sc.arrival = timeToArr(dt+arr)
-        dt+=sc.stopTime-(dep-arr)
-        sc.departure = timeToArr(dep+dt)
-        delete stationsconnections[i].stopTime
-        console.log("sc:", stationsconnections[i])
+        if(isAfter(sc.arrival_time, sc.departure_time)) {
+            err[curId+"-departure_time"] = "Arrival cannot be after departure"
+        }
+    }
+    for(var i=0; i < stationsconnections.length; i++) {
+        var sc = stationsconnections[i]
+        sc.arrival = timeToArr(sc.arrival_time)
+        sc.departure = timeToArr(sc.departure_time)
+        delete sc.arrival_time
+        delete sc.departure_time
     }
 }
 
-function saveConnectionArray() {
+async function saveConnectionArray() {
+    var p = []
     for(var i=0; i < stationsconnections.length; i++) {
-        saveSingleStop(i)
+        p[i] = await saveSingleStop(i)
     }
     function saveSingleStop(sid) {
         stationsconnections[sid].connection = id
         console.log(stationsconnections[sid])
-        postJson(api+"stationsconnections/upsert", stationsconnections[sid], function(data) {
+        return postJson(api+"stationsconnections/upsert", stationsconnections[sid], function(data) {
             stationsconnections[sid] = data
             console.log(data)
-            showConnectionForm()
+            return true
         })
+    }
+    for(var i=0; i < stationsconnections.length; i++) {
+        if(p[i] == true) {
+            continue
+        }
+    }
+    var url = new URL(location.href)
+    url.searchParams.set('id', id)
+    if(location.href != url.href) {
+        location.href = url.href
+    } else {
+        location.reload()
     }
 }
 
