@@ -10,9 +10,9 @@ export class AppComponent {
   title = 'client-frontend';
 
   navLinks = [
-      {label: 'Search connection', path: 'connection'},
-      {label: 'Buy tickets', path: 'buy'},
-      {label: 'My tickets', path: 'tickets'}
+      {label: 'Search connection', path: '/connection'},
+      {label: 'Buy tickets', path: '/buy'},
+      {label: 'My tickets', path: '/tickets'}
     ];
 
   constructor(private router: Router) {

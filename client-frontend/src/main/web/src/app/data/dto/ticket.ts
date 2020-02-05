@@ -1,13 +1,13 @@
 import {Discount} from "./discount";
 
-export interface PreTicket {
+export class PreTicket {
 
   uuid: string;
   discount: number;
 
 }
 
-export interface Ticket {
+export class Ticket {
 
   uuid: string;
   discount: Discount;

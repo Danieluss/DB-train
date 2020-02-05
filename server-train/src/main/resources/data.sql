@@ -17,7 +17,7 @@ INSERT INTO ticket(uuid, user_id) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338'
 INSERT INTO commutation_ticket_type(id, name, price, zone_id) VALUES (1, 'semestralny', 25, 1) ON CONFLICT DO NOTHING;
 INSERT INTO zones_connections(zone_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO commutation_ticket(uuid, end_date, start_date, type_id) VALUES ('de644b9b-7744-4dc4-9501-bb0ef0386952', TIMESTAMP '2020-01-10 10:23:54', TIMESTAMP '2020-06-15 10:23:54', 1) ON CONFLICT DO NOTHING;
-INSERT INTO path_ticket(uuid, price, station1_id, connection_id, station2_id, date) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 15, 1, 1, 2, TIMESTAMP '2020-01-27') ON CONFLICT DO NOTHING;
+INSERT INTO path_ticket(uuid, price, stationconnection_id1, stationconnection_id2, date) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 15, 1, 2, TIMESTAMP '2020-01-27') ON CONFLICT DO NOTHING;
 
 
 CREATE OR REPLACE FUNCTION total ()

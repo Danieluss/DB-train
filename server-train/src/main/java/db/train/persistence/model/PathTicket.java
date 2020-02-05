@@ -45,18 +45,12 @@ public class PathTicket extends Ticket {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumns({
-            @JoinColumn(name = "station1_id", referencedColumnName = "station_id", insertable = false, updatable = false),
-            @JoinColumn(name = "connection_id", referencedColumnName = "connection_id", insertable = false, updatable = false)
-    })
+    @JoinColumn(name = "stationconnection_id1")
     private StationsConnections stationConnection1;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumns({
-            @JoinColumn(name = "station2_id", referencedColumnName = "station_id", insertable = false, updatable = false),
-            @JoinColumn(name = "connection_id", referencedColumnName = "connection_id", insertable = false, updatable = false)
-    })
+    @JoinColumn(name = "stationconnection_id2")
     private StationsConnections stationConnection2;
 
     @JsonProperty("stationConnection1")

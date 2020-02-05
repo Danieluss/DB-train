@@ -9,7 +9,7 @@
                         [routerLink]="link.path"
                         routerLinkActive #rla="routerLinkActive"
                         [active]="rla.isActive">
-  {{link.label}}
+  {{link.label + (rla.isActive ? " ":"")}}
   </a>
 </nav>
 <router-outlet></router-outlet>
