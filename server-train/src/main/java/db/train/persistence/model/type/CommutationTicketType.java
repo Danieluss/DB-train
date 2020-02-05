@@ -46,7 +46,7 @@ public class CommutationTicketType {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "zone_id", updatable = false, insertable = false)
+    @JoinColumn(name = "zone_id")
     private Zone zone;
 
     @JsonProperty("zone")

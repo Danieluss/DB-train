@@ -1,5 +1,6 @@
 package db.train.security;
 
+import db.train.web.AbstractWebController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
