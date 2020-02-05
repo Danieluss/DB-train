@@ -42,7 +42,7 @@ public class CommutationTicket extends Ticket {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id", insertable = false, updatable = false)
     private CommutationTicketType type;
 
     @JsonProperty("type")
@@ -51,7 +51,7 @@ public class CommutationTicket extends Ticket {
         type.setId(id);
     }
 
-    @AssertTrue(message="Arrival should be before")
+    @AssertTrue(message="startDate should be before endDate")
     private boolean isCrossValid() {
         return this.startDate.before(this.endDate);
     }

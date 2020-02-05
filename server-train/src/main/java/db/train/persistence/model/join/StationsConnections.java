@@ -7,15 +7,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.Connection;
 import db.train.persistence.model.Station;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Map;
@@ -52,19 +50,20 @@ public class StationsConnections implements Serializable {
     private Integer number;
     @Column(nullable = false)
     private Boolean stop;
-    @Column(nullable =  false)
+    @Column(nullable = false)
     private LocalTime arrival;
     @Column(nullable = false)
     private LocalTime departure;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "station_id")
+    @JoinColumn(name = "station_id", updatable = false, insertable = false, nullable = false)
     private Station station;
+    @NotNull
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "connection_id")
+    @JoinColumn(name = "connection_id", updatable = false, insertable = false)
     private Connection connection;
 
     @JsonProperty("station")
@@ -79,7 +78,7 @@ public class StationsConnections implements Serializable {
         connection.setId(id);
     }
 
-    @AssertTrue(message="Departure should be before arrival")
+    @AssertTrue(message = "Arrival should be before")
     private boolean isCrossValid() {
         return (!(this.arrival.isAfter(this.departure)));
     }

@@ -21,3 +21,7 @@ server:
   servlet:
     session:
       timeout: 15m
+logging:
+  level:
+    org:
+      springframework: DEBUG

@@ -42,7 +42,8 @@ public class Station {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"station1"})
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "station1")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "station1_id")
     private List<Edge> edges;
     @DecimalMin("-180")
     @DecimalMax("180")

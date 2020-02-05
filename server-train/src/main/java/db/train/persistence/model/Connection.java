@@ -52,12 +52,17 @@ public class Connection {
     private String name;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "connections")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "trains_connections",
+            joinColumns = {@JoinColumn(name = "train_id")},
+            inverseJoinColumns = {@JoinColumn(name = "connection_id")})
     private Set<Train> trains;
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @JsonIdentityReference(alwaysAsId=true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "connection", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY,  cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy(value = "number")
+    @JoinColumn(name = "connection_id")
     private List<StationsConnections> stations;
     @Column(nullable = false)
     private Date firstDay;

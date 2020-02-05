@@ -8,4 +8,5 @@ public interface TrainUserRepository extends JpaRepository<TrainUser, Long> {
 
     TrainUser findByUsername(String string);
 
+    TrainUser findByEmail(String username);
 }

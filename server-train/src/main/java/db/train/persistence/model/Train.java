@@ -43,16 +43,13 @@ public class Train {
     private String name;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "train")
+    @OneToMany(fetch = FetchType.LAZY)
     @Size(min = 1)
+    @JoinColumn(name = "train_id")
     private List<Carriage> carriages;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "trains_connections",
-            joinColumns = {@JoinColumn(name = "train_id")},
-            inverseJoinColumns = {@JoinColumn(name = "connection_id")})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "trains")
     private Set<Connection> connections;
 
     @JsonProperty("carriages")
