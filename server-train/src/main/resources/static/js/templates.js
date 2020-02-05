@@ -127,15 +127,22 @@ edit["trainuser"] = [
 edit["ticket"] = [
     {name: "uuid", type: "__info__"}
 ]
+edit["pathticket_new"] = [
+    {name: "fromStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "toStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "time", type: "time"},
+    {name: "date", type: "date"}
+]
 edit["pathticket"] = [
     {name: "uuid", type: "__info__"},
     {name: "trainUser", type: "__search__", object: "trainuser", searchBy: "email", return: "id"},
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
     {name: "price", type: "number", min: "0", step: "0.01"},
-    {name: "connection", type: "__search__", object: "connection", searchBy: "id", return: "id"},
-    {name: "", type: "number", min: "0"},
-    {name: "", type: "number", min: "0"},
-    // {name: "validate", type: "__validate__", action: function()}
+    {name: "date", type: "date", readonly: "readonly"},
+    {name: "stationConnection1", comment: "from", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
+    {name: "stationConnection1", comment: "departure", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]},
+    {name: "stationConnection2", comment: "to", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
+    {name: "stationConnection2", comment: "arrival", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]}
 ]
 edit["commutationticket"] = [
     {name: "uuid", type: "__info__"},

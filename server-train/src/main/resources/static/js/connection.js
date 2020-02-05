@@ -99,23 +99,13 @@ function generateConnection() {
     if(stations.stations.length < 2) {
         $("#general-error").text("You have to specify at least 2 stations")
     }
-    if($.isEmptyObject(err)) {
-        postJson(api+"connection/generate", stations, function(data) {
-            stationsconnections = data
-            $.get(api+"connection/fields", function(data) {
-                obj = getDefaultObject(data)
-                showConnectionForm()
-            })
-        }, function(xhr) {
-            console.log(xhr)
-            err = JSON.parse(xhr.responseText)
+    submit(api+"connection/generate", stations, function(data) {
+        stationsconnections = data
+        $.get(api+"connection/fields", function(data) {
+            obj = getDefaultObject(data)
             showConnectionForm()
-            $("#general-error").text("There were errors in the form.")
         })
-    } else {
-        showConnectionForm()
-        $("#general-error").text("There were errors in the form. It couldn't have been submitted.")
-    }
+    })
 }
 
 function arrToTime(arr) {

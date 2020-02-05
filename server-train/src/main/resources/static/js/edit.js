@@ -14,9 +14,20 @@ function loadEdit() {
         })
     } else {
         var url = api+name+"/fields"
+        
         $.get(url, function(data) {
             obj = getDefaultObject(data)
             if(name == "pathticket" || name == "commutationticket") {
+                if(name == "pathticket") {
+                    let urlParams = new URLSearchParams(window.location.search);
+                    if(urlParams.get("stationConnection1") != undefined && urlParams.get("stationConnection1") != undefined) {
+                        obj.stationConnection1 = urlParams.get("stationConnection1")
+                        obj.stationConnection2 = urlParams.get("stationConnection2")
+                    } else {
+                        loadFindConnection()
+                        return
+                    }
+                }
                 url = api+"ticket/fields"
                 $.get(url, function(data) {
                     obj = Object.assign(obj, getDefaultObject(data))
@@ -48,6 +59,8 @@ function getDefaultObject(data) {
             t = []
         } else if(s == "UUID") {
             t = ""
+        } else if(s == "Train") {
+            t = null  
         } else {
             t = 0
         }
@@ -62,11 +75,17 @@ function showInfo(htmlId, value, params) {
     insertHtml(htmlId, txt)
 }
 
+function showRecurrentInfo(htmlId, value, params) {
+    var txt=`<p>${params.comment}: <span id='${htmlId}-rec-container'></span></p>`
+    insertHtml(htmlId, txt)
+    showRecurrentValue(htmlId+"-rec", value, params.arr)
+}
+
 function showInput(htmlId, value, params) {
     var txt=""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     keys = Object.keys(params)
-    txt+="<input class='form-control' id='${htmlId}'"
+    txt+=`<input class='form-control' id='${htmlId}'`
     for(var i=0; i < keys.length; i++) {
         var key = keys[i]
         if(key == "name") {
@@ -260,6 +279,7 @@ function showArray(htmlId, value, params) {
 
 showSth = {
     __info__: showInfo,
+    __recurrentInfo__: showRecurrentInfo,
     text: showInput,
     number: showInput,
     checkbox: showInput,
@@ -365,31 +385,35 @@ function saveObject() {
 function submitEditForm() {
     err = {}
     saveObject()
-    if($.isEmptyObject(err)) {
-        if(name == "connection" && id == 0) {
-            obj.stations = []
+    if(name == "connection" && id == 0) {
+        obj.stations = []
+    }
+    submit(api+name+"/upsert/", obj, function(data) {
+        obj = data
+        console.log(obj)
+        if(name == "pathticket" || name == "commutationticket") {
+            id = data.uuid
+        } else {
+            id = data.id
         }
-        postJson(api+name+"/upsert/", obj, function(data) {
-            obj = data
-            console.log(obj)
-            if(name == "pathticket" || name == "commutationticket") {
-                id = data.uuid
-            } else {
-                id = data.id
-            }
-            if(name == "connection") {
-                // alert("BLOCK")
-                saveConnectionArray()
-                return
-            }
-            var url = new URL(location.href)
-            url.searchParams.set('id', id)
-            if(location.href != url.href) {
-                location.href = url.href
-            } else {
-                location.reload()
-            }
-        }, function(xhr) {
+        if(name == "connection") {
+            // alert("BLOCK")
+            saveConnectionArray()
+            return
+        }
+        var url = new URL(location.href)
+        url.searchParams.set('id', id)
+        if(location.href != url.href) {
+            location.href = url.href
+        } else {
+            location.reload()
+        }
+    })
+}
+
+function submit(url, obj, success) {
+    if($.isEmptyObject(err)) {
+        postJson(url, obj, success, function(xhr) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
             if(name == "connection") {
