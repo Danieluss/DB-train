@@ -34,19 +34,25 @@ public class Carriage {
     private Long id;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "train_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "train_id")
     private Train train;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "type_id", insertable = false, updatable = false)
+    @JoinColumn(name = "type_id")
     private CarriageType type;
 
     @JsonProperty("type")
     public void setType(Long id) {
         type = new CarriageType();
         type.setId(id);
+    }
+
+    @JsonProperty("train")
+    public void setTrain(Long id) {
+        train = new Train();
+        train.setId(id);
     }
 
 }
