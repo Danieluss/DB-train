@@ -54,7 +54,7 @@ edit["edge"] = [
 edit["connection_new"] = [
     {name: "stations", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "station", searchBy: "name", return: "id"},
+            {name: "Add new", type: "__search__", object: "station", searchBy: "name", return: "id"},
         ],
         swapping: true,
     }
@@ -62,19 +62,19 @@ edit["connection_new"] = [
 edit["connection"] = [
     {name: "id", type: "__info__"},
     {name: "name", type: "text"},
+    {name: "firstDay", type: "date"},
+    {name: "lastDay", type: "date"},
     {name: "stations", type: "__connectionlist__",
-        departure: {name: "departure", type: "time"},
         arr: [
             {name: "stop", type: "checkbox"},
             {name: "station", type: "__usedSearch__", object: "station", searchBy: "name", return: "id"},
-            {name: "stopTime", type: "number", min:"0"},
-            {name: "arrival", type: "__infotime__"},
-            {name: "departure", type: "__infotime__"}
+            {name: "arrival_time", type: "time"},
+            {name: "departure_time", type: "time"}
         ],
     },
     {name: "trains", type: "__list__", 
         arr: [
-            {name: "", type: "__search__", object: "train", searchBy: "name", return: "id"}
+            {name: "Add new", type: "__search__", object: "train", searchBy: "name", return: "id"}
         ]
     }
 ]
@@ -83,7 +83,7 @@ edit["train"] = [
     {name: "name", type: "text"},
     {name: "carriages", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "carriage", searchBy: "id", return: "id", null: "train"}
+            {name: "Add new", type: "__search__", object: "carriage", searchBy: "id", return: "id", null: "train"}
         ],
     }
 ]
@@ -102,7 +102,7 @@ edit["zone"] = [
     {name: "description", type: "text"},
     {name: "connections", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "connection", searchBy: "id", return: "id"}
+            {name: "Add new", type: "__search__", object: "connection", searchBy: "id", return: "id"}
         ]
     }
 ]
@@ -127,15 +127,22 @@ edit["trainuser"] = [
 edit["ticket"] = [
     {name: "uuid", type: "__info__"}
 ]
+edit["pathticket_new"] = [
+    {name: "fromStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "toStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
+    {name: "time", type: "time"},
+    {name: "date", type: "date"}
+]
 edit["pathticket"] = [
     {name: "uuid", type: "__info__"},
     {name: "trainUser", type: "__search__", object: "trainuser", searchBy: "email", return: "id"},
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
     {name: "price", type: "number", min: "0", step: "0.01"},
-    {name: "connection", type: "__search__", object: "connection", searchBy: "id", return: "id"},
-    {name: "", type: "number", min: "0"},
-    {name: "", type: "number", min: "0"},
-    // {name: "validate", type: "__validate__", action: function()}
+    {name: "date", type: "date", readonly: "readonly"},
+    {name: "stationConnection1", comment: "from", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
+    {name: "stationConnection1", comment: "departure", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]},
+    {name: "stationConnection2", comment: "to", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
+    {name: "stationConnection2", comment: "arrival", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]}
 ]
 edit["commutationticket"] = [
     {name: "uuid", type: "__info__"},

@@ -14,9 +14,28 @@ function loadEdit() {
         })
     } else {
         var url = api+name+"/fields"
+        
         $.get(url, function(data) {
             obj = getDefaultObject(data)
-            showEditForm()
+            if(name == "pathticket" || name == "commutationticket") {
+                if(name == "pathticket") {
+                    let urlParams = new URLSearchParams(window.location.search);
+                    if(urlParams.get("stationConnection1") != undefined && urlParams.get("stationConnection1") != undefined) {
+                        obj.stationConnection1 = urlParams.get("stationConnection1")
+                        obj.stationConnection2 = urlParams.get("stationConnection2")
+                    } else {
+                        loadFindConnection()
+                        return
+                    }
+                }
+                url = api+"ticket/fields"
+                $.get(url, function(data) {
+                    obj = Object.assign(obj, getDefaultObject(data))
+                    showEditForm()
+                })
+            } else {
+                showEditForm()
+            }
         })
     }
 }
@@ -25,6 +44,9 @@ function getDefaultObject(data) {
     var res = {}
     var keys = Object.keys(data)
     for(var i=0; i < keys.length; i++) {
+        if(keys[i] == "TOOLTIPS") {
+            continue
+        }
         var s = data[keys[i]]
         var t
         if(s == "String") {
@@ -35,6 +57,10 @@ function getDefaultObject(data) {
             t = new Date().getTime()
         } else if(s == "Set" || s == "List") {
             t = []
+        } else if(s == "UUID") {
+            t = ""
+        } else if(s == "Train") {
+            t = null  
         } else {
             t = 0
         }
@@ -49,11 +75,17 @@ function showInfo(htmlId, value, params) {
     insertHtml(htmlId, txt)
 }
 
+function showRecurrentInfo(htmlId, value, params) {
+    var txt=`<p>${params.comment}: <span id='${htmlId}-rec-container'></span></p>`
+    insertHtml(htmlId, txt)
+    showRecurrentValue(htmlId+"-rec", value, params.arr)
+}
+
 function showInput(htmlId, value, params) {
     var txt=""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     keys = Object.keys(params)
-    txt+="<input class='form-control' id='${htmlId}'"
+    txt+=`<input class='form-control' id='${htmlId}'`
     for(var i=0; i < keys.length; i++) {
         var key = keys[i]
         if(key == "name") {
@@ -67,8 +99,9 @@ function showInput(htmlId, value, params) {
             txt+=" checked"
         }
     } else if(params.type == "date") {
-        var d = new Date(value)
-        txt+= `value='${d.toISOString().slice(0, 10)}'`
+        txt+= `value='${new Date(value).toISOString().slice(0, 10)}'`
+    } else if(params.type == "time") {
+        txt+= `value='${new Date(value).toISOString().slice(11, 16)}'`
     } else {
         txt+=`value='${value}'`
     }
@@ -78,7 +111,6 @@ function showInput(htmlId, value, params) {
 
 function showSearch(htmlId, value, params) {
     var previousQuery = undefined
-    console.log(htmlId)
     var txt = ""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
@@ -124,9 +156,7 @@ function showSearch(htmlId, value, params) {
             for(var i=0; i < options.length; i++) {
                 var val = options[i][params.searchBy]
                 txt+=`<option value="${val}"/>`
-                console.log(val, query)
                 if(val == query) {
-                    console.log(`[name='${htmlId}']`)
                     $(`[name='${htmlId}']`).attr('return', options[i][params.return])
                     resultSet = true
                 }
@@ -140,14 +170,13 @@ function showSearch(htmlId, value, params) {
 }
 
 function showUsedSearch(htmlId, value, params) {
-    console.log("usedsearch: ", htmlId)
     $.get(api+params.object+'/get/'+value, function(data){
         var txt = `<p>${data[params.searchBy]}</p>`
         insertHtml(htmlId, txt)
     })
 }
 
-function showObject(htmlId, value, params) {
+function showObject(htmlId, value, params, mainObject=false) {
     var txt=""
     for(var i=0; i < params.length; i++) {
         var curId = htmlId+"-"+params[i].name
@@ -158,23 +187,27 @@ function showObject(htmlId, value, params) {
     for(var i=0; i < params.length; i++) {
         var curId = htmlId + "-" + params[i].name
         showSth[params[i].type](curId, value[params[i].name], params[i])
+        var errId = `#${curId}-error`
+        if(mainObject) {
+            $(errId).addClass("block")
+        }
         if(err[curId] != undefined) {
-            $(`#${curId}-error`).text(err[curId])
+            $(errId).text(err[curId])
         } else if(err[params[i].name] != undefined) {
-            $(`#${curId}-error`).text(err[params[i].name])
+            $(errId).text(err[params[i].name])
         }
     }
 }
 
 function showArray(htmlId, value, params) {
     var txt=`<p>${params.name}</p>`
-    txt+=`<div class="form-row">`
+    txt+=`<div class="form-row changingList" >`
     txt+=`<div id='${htmlId}-new-container'></div>`
     txt+=`<a id='${htmlId}_new' href="#" title="Add">${getIcon("add")}</a>`
     txt+="</div>"
     for(var i=0; i < value.length; i++) {
         var curId = htmlId+"-"+i
-        txt+='<div class="form-row">'
+        txt+='<div class="form-row changingList">'
         txt+=`<div id='${curId}-container'></div>`
         if(params.swapping) {
             if(i > 0) {
@@ -246,7 +279,7 @@ function showArray(htmlId, value, params) {
 
 showSth = {
     __info__: showInfo,
-    __infotime__: showInfoTime,
+    __recurrentInfo__: showRecurrentInfo,
     text: showInput,
     number: showInput,
     checkbox: showInput,
@@ -270,18 +303,24 @@ function showEditForm() {
     txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
-    showObject(name, obj, edit[name])
+    showObject(name, obj, edit[name], true)
 }
 
 function isInvalid(htmlId) {
     return $(`[name='${htmlId}']`).is(":invalid")
 }
 
+function unformatTime(s) {
+    var arr = s.split(":")
+    return parseInt(arr[0])*60+parseInt(arr[1])
+}
 
 function getInput(htmlId, params) {
     var id = `[name=${htmlId}]`
     if(params["type"] == "checkbox") {
         return $(id).is(":checked")
+    } else if(params["type"] == "time") {
+        return unformatTime($(id).val())
     } else {
         if(isInvalid(htmlId)) {
             err[htmlId] = `${params.name} has to be a valid ${params.type}`
@@ -299,7 +338,6 @@ function getInput(htmlId, params) {
 function getSearch(htmlId, params) {
     var value = $(`[name='${htmlId}']`).attr('return')
     if(!(value > 0)) {
-        console.log(value)
         err[htmlId] = 'No object chosen'
     }
     return value
@@ -319,6 +357,7 @@ getSth = {
     number: getInput,
     checkbox: getInput,
     date: getInput,
+    time: getInput,
     __search__: getSearch,
     __usedSearch__: undefined,
     __list__: getArray,
@@ -346,31 +385,35 @@ function saveObject() {
 function submitEditForm() {
     err = {}
     saveObject()
-    if($.isEmptyObject(err)) {
+    if(name == "connection" && id == 0) {
+        obj.stations = []
+    }
+    submit(api+name+"/upsert/", obj, function(data) {
+        obj = data
         console.log(obj)
-        if(name == "connection" && id == 0) {
-            obj.stations = []
+        if(name == "pathticket" || name == "commutationticket") {
+            id = data.uuid
+        } else {
+            id = data.id
         }
-        postJson(api+name+"/upsert/", obj, function(data) {
-            obj = data
-            console.log(obj)
-            if(name == "pathticket" || name == "commutationticket") {
-                id = data.uuid
-            } else {
-                id = data.id
-            }
-            if(name == "connection") {
-                saveConnectionArray()
-                return
-            }
-            var url = new URL(location.href)
-            url.searchParams.set('id', id)
-            if(location.href != url.href) {
-                location.href = url.href
-            } else {
-                location.reload()
-            }
-        }, function(xhr) {
+        if(name == "connection") {
+            // alert("BLOCK")
+            saveConnectionArray()
+            return
+        }
+        var url = new URL(location.href)
+        url.searchParams.set('id', id)
+        if(location.href != url.href) {
+            location.href = url.href
+        } else {
+            location.reload()
+        }
+    })
+}
+
+function submit(url, obj, success) {
+    if($.isEmptyObject(err)) {
+        postJson(url, obj, success, function(xhr) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
             if(name == "connection") {
