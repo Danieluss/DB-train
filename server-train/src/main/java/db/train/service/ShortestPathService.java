@@ -84,7 +84,7 @@ public class ShortestPathService {
                 prev = result.get(result.size() - 1);
                 d = new Double(distances.get(i)-distances.get(i-1)).longValue();
             }
-            Long t =(3*d)/5;
+            Long t = (long) Math.ceil((3*d)/4);
             result.add(new StationsConnections(
                     new Long(0), prev.getNumber()+1, true,
                     prev.getDeparture().plusMinutes(t),

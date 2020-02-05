@@ -434,3 +434,19 @@ tr:hover {
 	color: #d44950;
 	font-size: 0.8em;
 }
+
+.changingList:nth-child(odd) {
+	background-color: #eeeeee;
+}
+
+.changingList {
+	padding: 10px;
+}
+
+.changingList:hover {
+	background-color: #b6d8fc;
+}
+
+.block {
+	margin-bottom: 20px !important;
+}

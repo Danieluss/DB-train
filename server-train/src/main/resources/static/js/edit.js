@@ -16,7 +16,15 @@ function loadEdit() {
         var url = api+name+"/fields"
         $.get(url, function(data) {
             obj = getDefaultObject(data)
-            showEditForm()
+            if(name == "pathticket" || name == "commutationticket") {
+                url = api+"ticket/fields"
+                $.get(url, function(data) {
+                    obj = Object.assign(obj, getDefaultObject(data))
+                    showEditForm()
+                })
+            } else {
+                showEditForm()
+            }
         })
     }
 }
@@ -25,6 +33,9 @@ function getDefaultObject(data) {
     var res = {}
     var keys = Object.keys(data)
     for(var i=0; i < keys.length; i++) {
+        if(keys[i] == "TOOLTIPS") {
+            continue
+        }
         var s = data[keys[i]]
         var t
         if(s == "String") {
@@ -69,7 +80,6 @@ function showInput(htmlId, value, params) {
     } else if(params.type == "date") {
         txt+= `value='${new Date(value).toISOString().slice(0, 10)}'`
     } else if(params.type == "time") {
-        console.log(value)
         txt+= `value='${new Date(value).toISOString().slice(11, 16)}'`
     } else {
         txt+=`value='${value}'`
@@ -80,7 +90,6 @@ function showInput(htmlId, value, params) {
 
 function showSearch(htmlId, value, params) {
     var previousQuery = undefined
-    console.log(htmlId)
     var txt = ""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
@@ -126,9 +135,7 @@ function showSearch(htmlId, value, params) {
             for(var i=0; i < options.length; i++) {
                 var val = options[i][params.searchBy]
                 txt+=`<option value="${val}"/>`
-                console.log(val, query)
                 if(val == query) {
-                    console.log(`[name='${htmlId}']`)
                     $(`[name='${htmlId}']`).attr('return', options[i][params.return])
                     resultSet = true
                 }
@@ -142,14 +149,13 @@ function showSearch(htmlId, value, params) {
 }
 
 function showUsedSearch(htmlId, value, params) {
-    console.log("usedsearch: ", htmlId)
     $.get(api+params.object+'/get/'+value, function(data){
         var txt = `<p>${data[params.searchBy]}</p>`
         insertHtml(htmlId, txt)
     })
 }
 
-function showObject(htmlId, value, params) {
+function showObject(htmlId, value, params, mainObject=false) {
     var txt=""
     for(var i=0; i < params.length; i++) {
         var curId = htmlId+"-"+params[i].name
@@ -160,23 +166,27 @@ function showObject(htmlId, value, params) {
     for(var i=0; i < params.length; i++) {
         var curId = htmlId + "-" + params[i].name
         showSth[params[i].type](curId, value[params[i].name], params[i])
+        var errId = `#${curId}-error`
+        if(mainObject) {
+            $(errId).addClass("block")
+        }
         if(err[curId] != undefined) {
-            $(`#${curId}-error`).text(err[curId])
+            $(errId).text(err[curId])
         } else if(err[params[i].name] != undefined) {
-            $(`#${curId}-error`).text(err[params[i].name])
+            $(errId).text(err[params[i].name])
         }
     }
 }
 
 function showArray(htmlId, value, params) {
     var txt=`<p>${params.name}</p>`
-    txt+=`<div class="form-row">`
+    txt+=`<div class="form-row changingList" >`
     txt+=`<div id='${htmlId}-new-container'></div>`
     txt+=`<a id='${htmlId}_new' href="#" title="Add">${getIcon("add")}</a>`
     txt+="</div>"
     for(var i=0; i < value.length; i++) {
         var curId = htmlId+"-"+i
-        txt+='<div class="form-row">'
+        txt+='<div class="form-row changingList">'
         txt+=`<div id='${curId}-container'></div>`
         if(params.swapping) {
             if(i > 0) {
@@ -271,7 +281,7 @@ function showEditForm() {
     txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     $("#mainContent").html(txt)
     
-    showObject(name, obj, edit[name])
+    showObject(name, obj, edit[name], true)
 }
 
 function isInvalid(htmlId) {
@@ -288,7 +298,6 @@ function getInput(htmlId, params) {
     if(params["type"] == "checkbox") {
         return $(id).is(":checked")
     } else if(params["type"] == "time") {
-        console.log(($(id).val()))
         return unformatTime($(id).val())
     } else {
         if(isInvalid(htmlId)) {
@@ -307,7 +316,6 @@ function getInput(htmlId, params) {
 function getSearch(htmlId, params) {
     var value = $(`[name='${htmlId}']`).attr('return')
     if(!(value > 0)) {
-        console.log(value)
         err[htmlId] = 'No object chosen'
     }
     return value
@@ -356,7 +364,6 @@ function submitEditForm() {
     err = {}
     saveObject()
     if($.isEmptyObject(err)) {
-        console.log(obj)
         if(name == "connection" && id == 0) {
             obj.stations = []
         }
@@ -369,7 +376,7 @@ function submitEditForm() {
                 id = data.id
             }
             if(name == "connection") {
-                alert("BLOCK")
+                // alert("BLOCK")
                 saveConnectionArray()
                 return
             }

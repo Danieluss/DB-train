@@ -29,12 +29,10 @@ function loadConnection() {
 function prepareStationsConnections(sc) {
     sc.departure_time = arrToTime(sc.departure)
     sc.arrival_time = arrToTime(sc.arrival)
-    console.log(sc)
     return sc
 }
 
 function showConnectionArray(htmlId, value, params) {
-    console.log("before: ", stationsconnections)
     if(value.length <= stationsconnections.length) {
         for(var i=0; i < stationsconnections.length; i++) {
             obj.stations[i] = (stationsconnections[i].id)
@@ -46,14 +44,10 @@ function showConnectionArray(htmlId, value, params) {
             obj.lastStation = res
         }, stationsconnections[stationsconnections.length-1].station, ["station", "name"])
     }
-    console.log("after: ", stationsconnections)
     var txt=`<div><p>${params.name}</p>`
-    txt+=`<div id="${htmlId}-departure-container"></div>`
     for(var i=0; i < value.length; i++) {
         var curId = htmlId+"-"+i
-        txt+='<div>'
-        txt+=`<div class="form-row" id='${curId}-container'></div>`
-        txt+='</div>'
+        txt+=`<div class="form-row changingList" id='${curId}-container'></div>`
     }
     txt+='</div>'
     insertHtml(htmlId, txt);
@@ -63,7 +57,6 @@ function showConnectionArray(htmlId, value, params) {
     function show(id) {
         if(stationsconnections[id] == undefined) {
             $.get(api+'stationsconnections/get/'+value[id], function(data) {
-                console.log("id:", id)
                 stationsconnections[id] = data
                 showStationConnection(id)
             })
@@ -75,6 +68,8 @@ function showConnectionArray(htmlId, value, params) {
     function showStationConnection(id) {
         stationsconnections[id] = prepareStationsConnections(stationsconnections[id])
         showObject(htmlId+"-"+id, stationsconnections[id], params.arr)
+        console.log(htmlId+"-"+id)
+        $(`#${htmlId}-${id}-container`).children().addClass("col")
     }
 }
 
@@ -91,10 +86,10 @@ function showConnectionForm() {
     txt+=`<div id="general-error"></div>`
     $("#mainContent").html(txt)
     if(id == 0) {
-        showObject("new-connection", stations, edit["connection_new"])
+        showObject("new-connection", stations, edit["connection_new"], true)
     }
     if(obj != undefined) {
-        showObject("connection", obj, edit["connection"])
+        showObject("connection", obj, edit["connection"], true)
     }
 }
 
@@ -104,11 +99,8 @@ function generateConnection() {
     if(stations.stations.length < 2) {
         $("#general-error").text("You have to specify at least 2 stations")
     }
-    console.log(stations)
     if($.isEmptyObject(err)) {
-        console.log(obj)
         postJson(api+"connection/generate", stations, function(data) {
-            console.log(stationsconnections, data)
             stationsconnections = data
             $.get(api+"connection/fields", function(data) {
                 obj = getDefaultObject(data)
@@ -133,7 +125,6 @@ function arrToTime(arr) {
 function timeToArr(t) {
     var mod = 60*24
     t = (t%mod+mod)%mod
-    console.log(t)
     return [Math.floor(t/60), t%60]
 }
 
@@ -170,10 +161,8 @@ async function saveConnectionArray() {
     }
     function saveSingleStop(sid) {
         stationsconnections[sid].connection = id
-        console.log(stationsconnections[sid])
         return postJson(api+"stationsconnections/upsert", stationsconnections[sid], function(data) {
             stationsconnections[sid] = data
-            console.log(data)
             return true
         })
     }

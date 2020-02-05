@@ -54,7 +54,7 @@ edit["edge"] = [
 edit["connection_new"] = [
     {name: "stations", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "station", searchBy: "name", return: "id"},
+            {name: "Add new", type: "__search__", object: "station", searchBy: "name", return: "id"},
         ],
         swapping: true,
     }
@@ -74,7 +74,7 @@ edit["connection"] = [
     },
     {name: "trains", type: "__list__", 
         arr: [
-            {name: "", type: "__search__", object: "train", searchBy: "name", return: "id"}
+            {name: "Add new", type: "__search__", object: "train", searchBy: "name", return: "id"}
         ]
     }
 ]
@@ -83,7 +83,7 @@ edit["train"] = [
     {name: "name", type: "text"},
     {name: "carriages", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "carriage", searchBy: "id", return: "id", null: "train"}
+            {name: "Add new", type: "__search__", object: "carriage", searchBy: "id", return: "id", null: "train"}
         ],
     }
 ]
@@ -102,7 +102,7 @@ edit["zone"] = [
     {name: "description", type: "text"},
     {name: "connections", type: "__list__",
         arr: [
-            {name: "", type: "__search__", object: "connection", searchBy: "id", return: "id"}
+            {name: "Add new", type: "__search__", object: "connection", searchBy: "id", return: "id"}
         ]
     }
 ]
