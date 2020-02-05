@@ -20,7 +20,7 @@ function loadList() {
 function requestList() {
     var url = api+name+"/"
     if(query != "") {
-        url+="search/page"
+        url+="search/deep"
     } else {
         url+="page"
     }
@@ -28,7 +28,7 @@ function requestList() {
     if(lists[name][0].length == 1) {
         sortBy = lists[name][0][0]
     }
-    url+="?page=" + page + "&size=10&sort=" + sortBy
+    url+="?depth=2&page=" + page + "&size=10&sort=" + sortBy
     if(query != "") {
         url+=`&query=${query}`
     }

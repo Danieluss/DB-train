@@ -24,7 +24,7 @@ function stationToPoint(station) {
 }
 
 function dateToTime(date) {
-    return dateFormat(new Date(date), 'hh:MM:ss')
+    return dateFormat(new Date(date), 'HH:MM:ss')
 }
 
 function saveSet(obj, filename) {
