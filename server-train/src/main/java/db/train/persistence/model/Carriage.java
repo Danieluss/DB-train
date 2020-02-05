@@ -45,14 +45,18 @@ public class Carriage {
 
     @JsonProperty("type")
     public void setType(Long id) {
-        type = new CarriageType();
-        type.setId(id);
+        if(id != null) {
+            type = new CarriageType();
+            type.setId(id);
+        }
     }
 
     @JsonProperty("train")
     public void setTrain(Long id) {
-        train = new Train();
-        train.setId(id);
+        if(id != null) {
+            train = new Train();
+            train.setId(id);
+        }
     }
 
 }

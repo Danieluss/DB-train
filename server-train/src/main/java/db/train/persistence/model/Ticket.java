@@ -54,13 +54,17 @@ public class Ticket {
 
     @JsonProperty("discount")
     public void setDiscount(Long id) {
-        discount = new Discount();
-        discount.setId(id);
+        if(id != null) {
+            discount = new Discount();
+            discount.setId(id);
+        }
     }
 
     @JsonProperty("trainUser")
     public void setTrainUser(Long id) {
-        trainUser = new TrainUser();
-        trainUser.setId(id);
+        if(id != null) {
+            trainUser = new TrainUser();
+            trainUser.setId(id);
+        }
     }
 }

@@ -47,8 +47,10 @@ public class CommutationTicket extends Ticket {
 
     @JsonProperty("type")
     public void setType(Long id) {
-        type = new CommutationTicketType();
-        type.setId(id);
+        if(id != null) {
+            type = new CommutationTicketType();
+            type.setId(id);
+        }
     }
 
     @AssertTrue(message="startDate should be before endDate")

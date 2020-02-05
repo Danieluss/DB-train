@@ -51,8 +51,10 @@ public class CommutationTicketType {
 
     @JsonProperty("zone")
     public void setZone(Long id) {
-        zone = new Zone();
-        zone.setId(id);
+        if (id != null) {
+            zone = new Zone();
+            zone.setId(id);
+        }
     }
 
 }
