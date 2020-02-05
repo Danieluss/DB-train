@@ -42,7 +42,7 @@ public class CommutationTicket extends Ticket {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "type_id", insertable = false, updatable = false)
+    @JoinColumn(name = "type_id")
     private CommutationTicketType type;
 
     @JsonProperty("type")
