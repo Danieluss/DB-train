@@ -46,6 +46,8 @@ function getDefaultObject(data) {
             t = new Date().getTime()
         } else if(s == "Set" || s == "List") {
             t = []
+        } else if(s == "UUID") {
+            t = ""
         } else {
             t = 0
         }
