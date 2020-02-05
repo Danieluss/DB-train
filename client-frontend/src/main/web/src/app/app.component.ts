@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'client-frontend';
+
+  navLinks = [
+      {label: 'Search connection', path: 'connection'},
+      {label: 'Buy tickets', path: 'buy'},
+      {label: 'My tickets', path: 'tickets'}
+    ];
+
+  constructor(private router: Router) {
+    router.navigate(['connection'])
+  }
+
 }
