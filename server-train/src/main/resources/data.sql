@@ -78,10 +78,11 @@ BEGIN
     if total > 0 then
         RAISE EXCEPTION \'This edge is currently in use\';
     end if;
+    return OLD;
 END; '
 LANGUAGE 'plpgsql';
 
-DROP TRIGGER checkIfEdgeIsUsedTrigger on edge;
+DROP TRIGGER if exists checkIfEdgeIsUsedTrigger on edge;
 
 CREATE TRIGGER checkIfEdgeIsUsedTrigger
     BEFORE DELETE ON edge
