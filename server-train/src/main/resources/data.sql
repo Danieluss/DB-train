@@ -11,9 +11,10 @@ INSERT INTO stations_connections(id, station_id, connection_id, number, stop, ar
 INSERT INTO trains_connections(train_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO train_user(id, email, name, password, role, surname, username) VALUES (1, 'admin@gmail.com', 'Janusz', '$2a$10$q5vKefZnFSi2PM4gS3s7a.LVC5ijXp0eCjLYYyPMypamZJzpFsXRm', 'ROLE_USER', 'Kowalski', 'user') ON CONFLICT DO NOTHING;
 INSERT INTO train_user(id, email, name, password, role, surname, username) VALUES (2, 'user@gmail.com', 'Janusz', '$2a$10$B86Leqg4lyrroM.bv9OBJupQMPVK8MMA8iW5yllPIKgRFL/f9sKKO', 'ROLE_ADMIN', 'Niekowalski', 'admin') ON CONFLICT DO NOTHING;
-INSERT INTO discount(id, name, percent_off) VALUES (1, 'świąteczna', 25) ON CONFLICT DO NOTHING;
+INSERT INTO discount(id, name, percent_off) VALUES (2, 'świąteczna', 25) ON CONFLICT DO NOTHING;
+INSERT INTO discount(id, name, percent_off) VALUES (1, 'brak', 0) ON CONFLICT DO NOTHING;
 INSERT INTO ticket(uuid, discount_id, user_id) VALUES ('de644b9b-7744-4dc4-9501-bb0ef0386952', 1, 1) ON CONFLICT DO NOTHING;
-INSERT INTO ticket(uuid, user_id) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 1) ON CONFLICT DO NOTHING;
+INSERT INTO ticket(uuid, discount_id, user_id) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 2, 1) ON CONFLICT DO NOTHING;
 INSERT INTO commutation_ticket_type(id, name, price, zone_id) VALUES (1, 'semestralny', 25, 1) ON CONFLICT DO NOTHING;
 INSERT INTO zones_connections(zone_id, connection_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO commutation_ticket(uuid, end_date, start_date, type_id) VALUES ('de644b9b-7744-4dc4-9501-bb0ef0386952', TIMESTAMP '2020-01-10 10:23:54', TIMESTAMP '2020-06-15 10:23:54', 1) ON CONFLICT DO NOTHING;
