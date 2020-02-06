@@ -105,20 +105,27 @@ function generateConnection() {
             obj = getDefaultObject(data)
             showConnectionForm()
         })
-    })
+    }, showConnectionForm)
 }
 
 function arrToTime(arr) {
     return parseInt(arr[0])*1000*3600+parseInt(arr[1])*1000*60
 }
 
+function toMinutes(t) {
+    return Math.ceil(t/60000)
+}
+
 function timeToArr(t) {
+    t = toMinutes(t)
     var mod = 60*24
     t = (t%mod+mod)%mod
     return [Math.floor(t/60), t%60]
 }
 
 function isAfter(a, b) {
+    a = toMinutes(a)
+    b = toMinutes(b)
     var mod = 60*24
     return ((b-a)%mod+mod)%mod > mod/2
 }

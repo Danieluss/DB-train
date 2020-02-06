@@ -16,7 +16,7 @@ function loadFindConnection() {
     obj = {}
     obj.fromStation = 0
     obj.toStation = 0
-    obj.time = new Date().getTime()
+    obj.departure = new Date().getTime()
     obj.date = new Date().getTime()
     showFindConnectionForm()
 }
@@ -32,32 +32,39 @@ function showFindConnectionForm() {
 }
 
 function findConnection() {
+    err = {}
     getObject("new-connection", obj, edit["pathticket_new"])
-    obj.time = timeToArr(obj.time)
+    obj.time = timeToArr(obj.departure)
     console.log(obj)
     alert("BLOCK")
     submit(api+"connection/findconnection", obj, function(data) {
         var connections = data
+        showFindConnectionForm()
         showConnections(connections)
-    })
+    }, showFindConnectionForm)
 }
 
 function showConnections(connections) {
-    var txt="<table><tr><th>Departure</th><th>Arrival</th><th>Get ticket</th>"
-    for(var i=0; i < connections.length; i++) {
-        txt+="<tr>"
-        txt+=`<td>${connections[i][0]}</td>`
-        txt+=`<td>${connections[i][1]}</td>`
-        var p = [
-            {key: "action", value: "edit"},
-            {key: "name", value: "pathticket"},
-            {key: "id", value: 0},
-            {key: "stationConnection1", value: connections[i][2]},
-            {key: "stationConnection2", value: connections[i][3]}
-        ]
-        txt+=`<td><a href='${createUrl(p)}'>${getIcon("add")}</a></td>`
-        txt+="</tr>"
+    var txt="";
+    if(connections.length == 0) {
+        txt+= "Sorry, there are no connections between chosen stations"
+    } else {
+        txt+="<table><tr><th>Departure</th><th>Arrival</th><th>Get ticket</th>"
+        for(var i=0; i < connections.length; i++) {
+            txt+="<tr>"
+            txt+=`<td>${connections[i][0]}</td>`
+            txt+=`<td>${connections[i][1]}</td>`
+            var p = [
+                {key: "action", value: "edit"},
+                {key: "name", value: "pathticket"},
+                {key: "id", value: 0},
+                {key: "stationConnection1", value: connections[i][2]},
+                {key: "stationConnection2", value: connections[i][3]}
+            ]
+            txt+=`<td><a href='${createUrl(p)}'>${getIcon("add")}</a></td>`
+            txt+="</tr>"
+        }
+        txt+="<table>"
     }
-    txt+="<table>"
     insertHtml("connections", txt)
 }

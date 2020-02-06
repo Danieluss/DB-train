@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @SequenceGenerator(name = "station_gen", sequenceName = "station_seq", initialValue = 1000)
-@Table(indexes = {@Index(columnList = "id", name = "id")})
+@Table(indexes = {
+    @Index(columnList = "id", name = "id"),
+    @Index(columnList = "name", name = "name")
+})
 public class Station {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()

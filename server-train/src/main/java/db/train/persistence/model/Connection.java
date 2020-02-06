@@ -1,5 +1,7 @@
 package db.train.persistence.model;
 
+import org.hibernate.annotations.Check;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Date;
 import javax.validation.constraints.AssertTrue;
+import javax.persistence.EntityManager;
 
 @Setter
 @Getter
@@ -104,5 +107,18 @@ public class Connection {
     private boolean isCrossValid() {
         return (this.firstDay.compareTo(this.lastDay) <= 0);
     }
+
+    // @Autowired
+    // private EntityManager entityManager;
+
+    // @AssertTrue(message="You cannot shrink the interval this way because there are tickets outside of it.")
+    // private boolean isIntervalValid() {
+    //     StoredProcedureQuery query = entityManager
+    //             .createStoredProcedureQuery("tickets_outside_interval")
+    //             .registerStoredProcedureParameter("check_id", Long.class, ParameterMode.IN)
+    //             .setParameter("check_id", id);
+    //     query.execute();
+    //     return (((long)query.getSingleResult()) == 0);
+    // }
 
 }

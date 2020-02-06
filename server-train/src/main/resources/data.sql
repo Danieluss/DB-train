@@ -42,3 +42,22 @@ BEGIN
     END;
 '
     LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION tickets_outside_interval(IN check_id bigint)
+    RETURNS bigint AS E' 
+DECLARE
+    res bigint;
+BEGIN
+    SELECT COUNT(*) into res
+    FROM stations_connections sc, path_ticket pt, connection c
+    where pt.stationconnection_id1 = sc.id
+    and sc.connection_id = check_id
+    and c.id = check_id
+    and (
+        date_trunc(\'day\', pt.date) < date_trunc(\'day\', c.first_day)
+        or
+        date_trunc(\'day\', pt.date) > date_trunc(\'day\', c.last_day)
+    );
+    RETURN res;
+END; '
+LANGUAGE 'plpgsql';

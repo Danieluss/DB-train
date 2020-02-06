@@ -17,7 +17,11 @@ import java.util.Map;
 @Getter
 @Entity
 @SequenceGenerator(name = "edge_gen", sequenceName = "edge_seq", initialValue = 1000)
-@Table(indexes = {@Index(columnList = "id", name = "id")})
+@Table(indexes = {
+    @Index(columnList = "id", name = "id"), 
+    @Index(columnList = "station1_id", name="station1_id")}, 
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"station1_id", "station2_id"})}
+)
 public class Edge {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
@@ -41,12 +45,12 @@ public class Edge {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "station1_id", insertable = false, updatable = false)
+    @JoinColumn(name = "station1_id")
     private Station station1;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "station2_id", insertable = false, updatable = false)
+    @JoinColumn(name = "station2_id")
     private Station station2;
 
     @JsonProperty("station1")

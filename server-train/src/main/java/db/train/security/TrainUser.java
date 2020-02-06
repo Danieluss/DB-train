@@ -20,7 +20,10 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @SequenceGenerator(name = "train_user_gen", sequenceName = "train_user_seq", initialValue = 1000)
-@Table(indexes = {@Index(columnList = "id", name = "id")})
+@Table(indexes = {
+    @Index(columnList = "id", name = "id"),
+    @Index(columnList = "email", name = "email")
+})
 @ExcludedEntity
 public class TrainUser {
 

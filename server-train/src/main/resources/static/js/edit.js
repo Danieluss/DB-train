@@ -114,15 +114,19 @@ function showSearch(htmlId, value, params) {
     var txt = ""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
-    txt+= `<datalist id='${htmlId}-datalist'></datalist>`
+    txt+= `<datalist id='${htmlId}-datalist' open='open'></datalist>`
     insertHtml(htmlId, txt)
-    $(`[name='${htmlId}']`).bind("keyup input", function() {
+    $(`[name='${htmlId}']`).bind("keyup", function() {
         updateSearch()
     })
-    $.get(api+params.object+'/get/'+value, function(data){
-        $(`[name='${htmlId}']`).val(data[params.searchBy])
+    if(value > 0) {
+        $.get(api+params.object+'/get/'+value, function(data){
+            $(`[name='${htmlId}']`).val(data[params.searchBy])
+            updateSearch()
+        })
+    } else {
         updateSearch()
-    })
+    }
     function updateSearch() {
         var query = $(`[name='${htmlId}']`).val()
         if(query == previousQuery) {
@@ -161,8 +165,9 @@ function showSearch(htmlId, value, params) {
                     resultSet = true
                 }
             }
+            console.log(resultSet)
             if(!resultSet) {
-                $(`[name='${htmlId}']`).attr('return', undefined)
+                $(`[name='${htmlId}']`).attr('return', null)
             }
             $(`#${htmlId}-datalist`).html(txt)
         })
@@ -312,7 +317,7 @@ function isInvalid(htmlId) {
 
 function unformatTime(s) {
     var arr = s.split(":")
-    return parseInt(arr[0])*60+parseInt(arr[1])
+    return parseInt(arr[0])*60*60000+parseInt(arr[1])*60000
 }
 
 function getInput(htmlId, params) {
@@ -408,24 +413,26 @@ function submitEditForm() {
         } else {
             location.reload()
         }
-    })
+    }, name == "connection" ? showConnectionForm : showEditForm)
 }
 
-function submit(url, obj, success) {
+function submit(url, obj, success, showIfError) {
     if($.isEmptyObject(err)) {
         postJson(url, obj, success, function(xhr) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
-            if(name == "connection") {
-                showConnectionForm()
+            showIfError()
+            // if(name == "connection") {
+            //     showConnectionForm()
                 
-            } else {
-                showEditForm()
-            }
+            // } else {
+            //     showEditForm()
+            // }
             $("#general-error").text("There were errors in the form.")
         })
     } else {
-        showEditForm()
+        showIfError()
+        // showEditForm()
         $("#general-error").text("There were errors in the form. It couldn't have been submitted.")
     }
 }

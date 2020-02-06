@@ -130,7 +130,7 @@ edit["ticket"] = [
 edit["pathticket_new"] = [
     {name: "fromStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
     {name: "toStation", type: "__search__", object: "station", searchBy: "name", return: "id"},
-    {name: "time", type: "time"},
+    {name: "departure", type: "time"},
     {name: "date", type: "date"}
 ]
 edit["pathticket"] = [
