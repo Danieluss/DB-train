@@ -20,7 +20,7 @@ function mapStationToName(id) {
 }
 
 connection_id = 1000
-for(var i=0; i < 0; i++) {
+for(var i=0; i < connections.length; i++) {
     try {
         c = connections[i]
         nc = {}

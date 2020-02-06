@@ -71,6 +71,8 @@ function recurrentCallback(callback, value, params) {
     console.log(value, params)
     if(params.length == 0) {
         callback(value)
+    } else if(typeof params[0] == "function") {
+        recurrentCallback(callback, params[0](value), params.slice(1))
     } else if(Array.isArray(value) || typeof value === "object") {
         recurrentCallback(callback, value[params[0]], params.slice(1))
     } else {

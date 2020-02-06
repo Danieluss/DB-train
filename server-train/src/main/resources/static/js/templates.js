@@ -140,9 +140,9 @@ edit["pathticket"] = [
     {name: "price", type: "number", min: "0", step: "0.01"},
     {name: "date", type: "date", readonly: "readonly"},
     {name: "stationConnection1", comment: "from", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
-    {name: "stationConnection1", comment: "departure", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]},
+    {name: "stationConnection1", comment: "departure", type: "__recurrentInfo__", arr: ["stationsconnections", "departure", function(a){return a.join(':')}]},
     {name: "stationConnection2", comment: "to", type: "__recurrentInfo__", arr: ["stationsconnections", "station", "station", "name"]},
-    {name: "stationConnection2", comment: "arrival", type: "__recurrentInfo__", arr: ["stationsconnections", "departure"]}
+    {name: "stationConnection2", comment: "arrival", type: "__recurrentInfo__", arr: ["stationsconnections", "departure", function(a){return a.join(':')}]}
 ]
 edit["commutationticket"] = [
     {name: "uuid", type: "__info__"},
@@ -150,5 +150,10 @@ edit["commutationticket"] = [
     {name: "discount", type: "__search__", object: "discount", searchBy: "name", return: "id"},
     {name: "startDate", type: "date"},
     {name: "endDate", type: "date"},
-    {name: "type", type: "__search__", object: "commutationtickettype", searchBy: "name", return: "id"}
+    {name: "type", type: "__search__", object: "commutationtickettype", searchBy: "id", return: "id"},
+    {name: "type", comment: "type", type: "__recurrentInfo__", arr: ["commutationtickettype", "name"]},
+    {name: "type", comment: "zone", type: "__recurrentInfo__", arr: ["commutationtickettype", "zone", "zone", "name"]}
 ]
+
+err_comments = []
+err_comments["edge"] = "Make sure that these stations are not connected already."

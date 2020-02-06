@@ -88,3 +88,29 @@ CREATE TRIGGER checkIfEdgeIsUsedTrigger
     BEFORE DELETE ON edge
     FOR EACH ROW
     EXECUTE PROCEDURE checkIfEdgeIsUsed();
+
+
+
+-- CREATE OR REPLACE FUNCTION checkIfThereAreTickets()
+--     RETURNS trigger AS E'
+-- DECLARE
+--     total integer;
+-- BEGIN
+--     select count(*) into total
+--     from stations_connections sc, path_ticket pt
+--     where OLD.id = sc.connection_id
+--     and sc.id = pt.stationconnection_id1;
+
+--     if total > 0 then
+--         RAISE EXCEPTION \'This connection has tickets assigned to it\';
+--     end if;
+--     return OLD;
+-- END; '
+-- LANGUAGE 'plpgsql';
+
+-- DROP TRIGGER if exists checkIfThereAreTickets on connection;
+
+-- CREATE TRIGGER checkIfThereAreTickets
+--     BEFORE DELETE ON connection
+--     FOR EACH ROW
+--     EXECUTE PROCEDURE checkIfThereAreTickets();

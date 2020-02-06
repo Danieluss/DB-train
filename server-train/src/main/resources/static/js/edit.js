@@ -180,16 +180,24 @@ function showUsedSearch(htmlId, value, params) {
     })
 }
 
+function getSubId(htmlId, params) {
+    var res = htmlId+"-"+params.name
+    if (params.comment != undefined) {
+        res+=params.comment
+    }
+    return res
+}
+
 function showObject(htmlId, value, params, mainObject=false) {
     var txt=""
     for(var i=0; i < params.length; i++) {
-        var curId = htmlId+"-"+params[i].name
+        var curId = getSubId(htmlId, params[i])
         txt+=`<div id='${curId}-container'></div>`
         txt+=`<div id=${curId}-error class="err"></div>`
     }
     insertHtml(htmlId, txt)
     for(var i=0; i < params.length; i++) {
-        var curId = htmlId + "-" + params[i].name
+        var curId = getSubId(htmlId, params[i])
         showSth[params[i].type](curId, value[params[i].name], params[i])
         var errId = `#${curId}-error`
         if(mainObject) {
@@ -370,7 +378,7 @@ getSth = {
 
 function getObject(htmlId, value, params) {
     for(var i=0; i < params.length; i++) {
-        var newHtmlId = htmlId + "-" + params[i].name
+        var newHtmlId = getSubId(htmlId, params[i])
         if(getSth[params[i].type] == undefined) {
             continue;
         }
@@ -421,13 +429,10 @@ function submit(url, obj, success, showIfError) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
             showIfError()
-            // if(name == "connection") {
-            //     showConnectionForm()
-                
-            // } else {
-            //     showEditForm()
-            // }
             $("#general-error").text("There were errors in the form.")
+            if(err_comments[name] != undefined) {
+                $("#general-error").append(" " + err_comments[name])
+            }
         })
     } else {
         showIfError()
