@@ -1,9 +1,9 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="mat-elevation-z3">
   <span>Train App</span>
   <span class="spacer"></span>
   <a class="logout" href="/logout" mat-button><mat-icon>exit_to_app</mat-icon> <span> Log Out</span></a>
 </mat-toolbar>
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar class="mat-elevation-z2">
   <a mat-tab-link
                         *ngFor="let link of navLinks"
                         [routerLink]="link.path"

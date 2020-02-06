@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Path {
-    Long fromStation;
-    Long toStation;
-    LocalTime time;
-    String date;
+    private Long fromStation;
+    private Long toStation;
+    private LocalTime time;
+    private String date;
 }

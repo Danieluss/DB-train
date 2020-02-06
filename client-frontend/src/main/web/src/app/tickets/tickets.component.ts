@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {PathTicket} from "../data/dto/path-ticket";
+import {DataService} from "../data/data.service";
 
 @Component({
   selector: 'app-tickets',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TicketsComponent implements OnInit {
 
-  constructor() { }
+  pathTickets: PathTicket[];
+  displayedColumns: string[] = ['uuid'];
+
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
+    this.refreshTickets(0, 16);
+  }
+
+  refreshTickets(page: number, size: number) {
+    this.dataService.getPathTickets(page, size).then((pathTickets) => {
+      this.pathTickets = pathTickets;
+    })
   }
 
 }
