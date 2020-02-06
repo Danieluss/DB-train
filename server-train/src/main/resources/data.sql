@@ -61,3 +61,29 @@ BEGIN
     RETURN res;
 END; '
 LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION checkIfEdgeIsUsed()
+    RETURNS trigger AS E'
+DECLARE
+    total integer;
+BEGIN
+    select count(*) into total
+    from stations_connections a, stations_connections b, connection c
+    where a.connection_id = b.connection_id
+    and c.id = a.connection_id
+    and a.number+1 = b.number
+    and a.station_id = OLD.station1_id
+    and b.station_id = OLD.station2_id
+    and c.last_day >= current_date;
+    if total > 0 then
+        RAISE EXCEPTION \'This edge is currently in use\';
+    end if;
+END; '
+LANGUAGE 'plpgsql';
+
+DROP TRIGGER checkIfEdgeIsUsedTrigger on edge;
+
+CREATE TRIGGER checkIfEdgeIsUsedTrigger
+    BEFORE DELETE ON edge
+    FOR EACH ROW
+    EXECUTE PROCEDURE checkIfEdgeIsUsed();

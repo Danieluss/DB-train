@@ -116,7 +116,7 @@ function showSearch(htmlId, value, params) {
     txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
     txt+= `<datalist id='${htmlId}-datalist' open='open'></datalist>`
     insertHtml(htmlId, txt)
-    $(`[name='${htmlId}']`).bind("keyup", function() {
+    $(`[name='${htmlId}']`).bind("keyup input", function() {
         updateSearch()
     })
     if(value > 0) {
@@ -165,7 +165,6 @@ function showSearch(htmlId, value, params) {
                     resultSet = true
                 }
             }
-            console.log(resultSet)
             if(!resultSet) {
                 $(`[name='${htmlId}']`).attr('return', null)
             }

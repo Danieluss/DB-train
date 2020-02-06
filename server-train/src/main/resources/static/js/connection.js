@@ -184,7 +184,7 @@ function showEdges(htmlId, value, params) {
         var p = [
             {key: "action", value: "edit"},
             {key: "name", value: "edge"},
-            {key: "id", value: id}
+            {key: "id", value: value[i]}
         ]
         txt+=`<tr><td id="edge-${i}-container"></td><td><a href='${createUrl(p)}'>${getIcon("edit")}</a></td></tr>`
     }
