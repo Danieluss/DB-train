@@ -1,7 +1,5 @@
 package db.train.persistence.model;
 
-import org.hibernate.annotations.Check;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,8 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.collect.ImmutableMap;
 import db.train.persistence.model.join.StationsConnections;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 import org.webrepogen.annotations.ExcludedEntity;
 
 import javax.persistence.*;
@@ -22,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Date;
 import javax.validation.constraints.AssertTrue;
-import javax.persistence.EntityManager;
 
 @Setter
 @Getter
@@ -30,6 +27,8 @@ import javax.persistence.EntityManager;
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
 @Table(indexes = {@Index(columnList = "id", name = "id")})
+// trick to make hibernate display first_day and last_day in error msg, there is no other civilized way
+@Check(constraints = "first_day = first_day AND last_day = last_day AND tickets_outside_interval(id) = 0")
 public class Connection {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
@@ -107,18 +106,5 @@ public class Connection {
     private boolean isCrossValid() {
         return (this.firstDay.compareTo(this.lastDay) <= 0);
     }
-
-    // @Autowired
-    // private EntityManager entityManager;
-
-    // @AssertTrue(message="You cannot shrink the interval this way because there are tickets outside of it.")
-    // private boolean isIntervalValid() {
-    //     StoredProcedureQuery query = entityManager
-    //             .createStoredProcedureQuery("tickets_outside_interval")
-    //             .registerStoredProcedureParameter("check_id", Long.class, ParameterMode.IN)
-    //             .setParameter("check_id", id);
-    //     query.execute();
-    //     return (((long)query.getSingleResult()) == 0);
-    // }
 
 }

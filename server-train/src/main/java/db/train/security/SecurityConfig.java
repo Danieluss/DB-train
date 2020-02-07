@@ -32,15 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-                Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-                if (roles.contains("ROLE_ADMIN")) {
-                    httpServletResponse.sendRedirect("/index.html");
-                } else if (roles.contains("ROLE_USER")) {
-                    httpServletResponse.sendRedirect("/client/index.html");
-                }
+        return (httpServletRequest, httpServletResponse, authentication) -> {
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+            if (roles.contains("ROLE_ADMIN")) {
+                httpServletResponse.sendRedirect("/index.html");
+            } else if (roles.contains("ROLE_USER")) {
+                httpServletResponse.sendRedirect("/client/index.html");
             }
         };
     }

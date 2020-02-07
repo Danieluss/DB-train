@@ -21,29 +21,6 @@ INSERT INTO commutation_ticket(uuid, end_date, start_date, type_id) VALUES ('de6
 INSERT INTO path_ticket(uuid, price, stationconnection_id1, stationconnection_id2, date) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 15, 1, 2, TIMESTAMP '2020-01-27') ON CONFLICT DO NOTHING;
 
 
-CREATE OR REPLACE FUNCTION total ()
-    RETURNS double precision AS '
-DECLARE
-    total_from_path real;
-    total_from_commutation real;
-BEGIN
-    SELECT sum(price) into total_from_path FROM path_ticket;
-    SELECT sum(price) into total_from_commutation FROM commutation_ticket join commutation_ticket_type on type_id = id;
-    RETURN total_from_commutation + total_from_path;
-END;
-'
-LANGUAGE 'plpgsql';
-
-
-CREATE OR REPLACE PROCEDURE price_rise (IN modifier double precision)
-    AS '
-    DECLARE
-BEGIN
-    UPDATE commutation_ticket_type set price = price * modifier;
-    END;
-'
-    LANGUAGE 'plpgsql';
-
 CREATE OR REPLACE FUNCTION tickets_outside_interval(IN check_id bigint)
     RETURNS bigint AS E' 
 DECLARE
@@ -89,29 +66,3 @@ CREATE TRIGGER checkIfEdgeIsUsedTrigger
     BEFORE DELETE ON edge
     FOR EACH ROW
     EXECUTE PROCEDURE checkIfEdgeIsUsed();
-
-
-
--- CREATE OR REPLACE FUNCTION checkIfThereAreTickets()
---     RETURNS trigger AS E'
--- DECLARE
---     total integer;
--- BEGIN
---     select count(*) into total
---     from stations_connections sc, path_ticket pt
---     where OLD.id = sc.connection_id
---     and sc.id = pt.stationconnection_id1;
-
---     if total > 0 then
---         RAISE EXCEPTION \'This connection has tickets assigned to it\';
---     end if;
---     return OLD;
--- END; '
--- LANGUAGE 'plpgsql';
-
--- DROP TRIGGER if exists checkIfThereAreTickets on connection;
-
--- CREATE TRIGGER checkIfThereAreTickets
---     BEFORE DELETE ON connection
---     FOR EACH ROW
---     EXECUTE PROCEDURE checkIfThereAreTickets();
