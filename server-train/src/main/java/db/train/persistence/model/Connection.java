@@ -27,8 +27,7 @@ import javax.validation.constraints.AssertTrue;
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
 @Table(indexes = {@Index(columnList = "id", name = "id")})
-// trick to make hibernate display first_day and last_day in error msg, there is no other civilized way
-@Check(constraints = "first_day = first_day AND last_day = last_day AND tickets_outside_interval(id) = 0")
+@Check(constraints = "tickets_outside_interval(id) = 0")
 public class Connection {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
