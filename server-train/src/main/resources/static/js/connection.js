@@ -83,7 +83,7 @@ function showConnectionForm() {
     if(obj != undefined) {
         txt+=`<button class="btn btn-primary" onclick="submitEditForm()">Submit</button>`
     }
-    txt+=`<div id="general-error"></div>`
+    txt+=`<div id="general-error" class="err"></div>`
     $("#mainContent").html(txt)
     if(id == 0) {
         showObject("new-connection", stations, edit["connection_new"], true)

@@ -433,6 +433,9 @@ function submit(url, obj, success, showIfError) {
             if(err_comments[name] != undefined) {
                 $("#general-error").append(" " + err_comments[name])
             }
+            if(err["crossValid"] != undefined) {
+                $("#general-error").append("<br/>"+err["crossValid"])
+            }
         })
     } else {
         showIfError()
