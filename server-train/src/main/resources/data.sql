@@ -21,24 +21,33 @@ INSERT INTO commutation_ticket(uuid, end_date, start_date, type_id) VALUES ('de6
 INSERT INTO path_ticket(uuid, price, stationconnection_id1, stationconnection_id2, date) VALUES ('643dafc5-6d35-464c-badd-41d1640e8338', 15, 1, 2, TIMESTAMP '2020-01-27') ON CONFLICT DO NOTHING;
 
 
-CREATE OR REPLACE FUNCTION tickets_outside_interval(IN check_id bigint)
-    RETURNS bigint AS E' 
+CREATE OR REPLACE FUNCTION ticketsOutsideInterval()
+    RETURNS trigger AS  E'
 DECLARE
     res bigint;
 BEGIN
     SELECT COUNT(*) into res
-    FROM stations_connections sc, path_ticket pt, connection c
+    FROM stations_connections sc, path_ticket pt
     where pt.stationconnection_id1 = sc.id
-    and sc.connection_id = check_id
-    and c.id = check_id
+    and sc.connection_id = NEW.id
     and (
-        date_trunc(\'day\', pt.date) < date_trunc(\'day\', c.first_day)
+        date_trunc(\'day\', pt.date) < date_trunc(\'day\', NEW.first_day)
         or
-        date_trunc(\'day\', pt.date) > date_trunc(\'day\', c.last_day)
+        date_trunc(\'day\', pt.date) > date_trunc(\'day\', NEW.last_day)
     );
-    RETURN res;
+    if res > 0 then
+        RAISE EXCEPTION \'You cannot shrink the interval this way because there are tickets outside of it.\';
+    end if;
+    return NEW;
 END; '
 LANGUAGE 'plpgsql';
+
+DROP TRIGGER if exists ticketsOutsideIntervalTrigger on connection;
+
+CREATE TRIGGER ticketsOutsideIntervalTrigger
+    BEFORE UPDATE ON connection
+    FOR EACH ROW
+    EXECUTE PROCEDURE ticketsOutsideInterval();
 
 CREATE OR REPLACE FUNCTION checkIfEdgeIsUsed()
     RETURNS trigger AS E'

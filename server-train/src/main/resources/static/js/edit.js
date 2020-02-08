@@ -409,7 +409,6 @@ function submitEditForm() {
             id = data.id
         }
         if(name == "connection") {
-            // alert("BLOCK")
             saveConnectionArray()
             return
         }
