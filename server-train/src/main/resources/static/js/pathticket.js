@@ -36,7 +36,6 @@ function findConnection() {
     getObject("new-connection", obj, edit["pathticket_new"])
     obj.time = timeToArr(obj.departure)
     console.log(obj)
-    alert("BLOCK")
     submit(api+"connection/findconnection", obj, function(data) {
         var connections = data
         showFindConnectionForm()

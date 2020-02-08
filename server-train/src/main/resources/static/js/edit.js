@@ -81,6 +81,19 @@ function showRecurrentInfo(htmlId, value, params) {
     showRecurrentValue(htmlId+"-rec", value, params.arr)
 }
 
+function formatDate(value) {
+    var d = new Date(value)
+    return d.getFullYear().toString().padStart(4, '0') +
+        '-'  + (d.getMonth()+1).toString().padStart(2, '0') +
+        '-' + d.getDate().toString().padStart(2, '0')
+}
+
+function formatTime(value) {
+    var t = new Date(value)
+    return t.getHours().toString().padStart(2, '0') +
+        ':' + t.getMinutes().toString().padStart(2, '0')
+}
+
 function showInput(htmlId, value, params) {
     var txt=""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
@@ -99,9 +112,9 @@ function showInput(htmlId, value, params) {
             txt+=" checked"
         }
     } else if(params.type == "date") {
-        txt+= `value='${new Date(value).toISOString().slice(0, 10)}'`
+        txt+= `value='${formatDate(value)}'`
     } else if(params.type == "time") {
-        txt+= `value='${new Date(value).toISOString().slice(11, 16)}'`
+        txt+= `value='${formatTime(value)}'`
     } else {
         txt+=`value='${value}'`
     }
