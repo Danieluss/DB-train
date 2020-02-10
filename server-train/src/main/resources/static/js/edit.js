@@ -462,13 +462,20 @@ function submit(url, obj, success, showIfError) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
             showIfError()
-            $("#general-error").text("There were errors in the form.")
+            var txt = "<p>There were errors in the form."
             if(err_comments[name] != undefined) {
-                $("#general-error").append(" " + err_comments[name])
+                txt+=" " + err_comments[name]
             }
+            txt+="</p>"
             if(err["crossValid"] != undefined) {
-                $("#general-error").append("<br/>"+err["crossValid"])
+                txt+= `<p>${err["crossValid"]}</p>`
             }
+            if(err["errors"] != undefined) {
+                for(var i=0; i < err.errors.length; i++) {
+                    txt+=`<p>${err.errors[i]}</p>`
+                }
+            }
+            $("#general-error").html(txt)
         })
     } else {
         showIfError()
