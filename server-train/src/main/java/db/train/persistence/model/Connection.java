@@ -26,7 +26,10 @@ import javax.validation.constraints.AssertTrue;
 @ExcludedEntity
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
-@Table(indexes = {@Index(columnList = "id", name = "id")})
+@Table(indexes = {
+        @Index(columnList = "id", name = "id"),
+        @Index(columnList = "firstStation,lastStation", name = "from_to")
+})
 public class Connection {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
