@@ -121,6 +121,7 @@ edit["trainuser"] = [
     {name: "id", type: "__info__"},
     {name: "username", type: "text", title: "Unique username"},
     {name: "password", type: "password", title: "Password"},
+    {name: "role", type: "select", options: ["ROLE_USER", "ROLE_ADMIN"]},
     {name: "email", type: "text", title: "Unique email"},
     {name: "name", type: "text", title: "Name of the user"},
     {name: "surname", type: "text", title: "Surname of the user"}

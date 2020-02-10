@@ -49,9 +49,7 @@ function getDefaultObject(data) {
         }
         var s = data[keys[i]]
         var t
-        if(keys[i] == "role") {
-            t = "ROLE_USER"
-        } else if(s == "String") {
+        if(s == "String") {
             t = ""
         } else if(s == "Integer" || s == "Long" || s == "Double") {
             t = 0
@@ -123,6 +121,17 @@ function showInput(htmlId, value, params) {
         txt+=`value='${value}'`
     }
     txt+="/>"
+    insertHtml(htmlId, txt)
+}
+
+function showSelect(htmlId, value, params) {
+    var txt=""
+    txt+= `<label for='${htmlId}'>${params.name}</label>`
+    txt+= `<select class='form-control' name='${htmlId}'>`
+    for(var i=0; i < params.options.length; i++) {
+        txt+= `<option value='${params.options[i]}' ${value == params.options[i] ? "selected" : ""}>${params.options[i]}</option>`
+    }
+    txt+= `</select>`
     insertHtml(htmlId, txt)
 }
 
@@ -315,6 +324,7 @@ showSth = {
     checkbox: showInput,
     date: showInput,
     time: showInput,
+    select: showSelect,
     __search__: showSearch,
     __usedSearch__: showUsedSearch,
     __list__: showArray,
@@ -365,6 +375,10 @@ function getInput(htmlId, params) {
     }
 }
 
+function getSelect(htmlId, params) {
+    return $(`[name='${htmlId}'] option:selected`).text();
+}
+
 function getSearch(htmlId, params) {
     var value = $(`[name='${htmlId}']`).attr('return')
     if(!(value > 0)) {
@@ -389,6 +403,7 @@ getSth = {
     checkbox: getInput,
     date: getInput,
     time: getInput,
+    select: getSelect,
     __search__: getSearch,
     __usedSearch__: undefined,
     __list__: getArray,
@@ -447,13 +462,20 @@ function submit(url, obj, success, showIfError) {
             console.log(xhr)
             err = JSON.parse(xhr.responseText)
             showIfError()
-            $("#general-error").text("There were errors in the form.")
+            var txt = "<p>There were errors in the form."
             if(err_comments[name] != undefined) {
-                $("#general-error").append(" " + err_comments[name])
+                txt+=" " + err_comments[name]
             }
+            txt+="</p>"
             if(err["crossValid"] != undefined) {
-                $("#general-error").append("<br/>"+err["crossValid"])
+                txt+= `<p>${err["crossValid"]}</p>`
             }
+            if(err["errors"] != undefined) {
+                for(var i=0; i < err.errors.length; i++) {
+                    txt+=`<p>${err.errors[i]}</p>`
+                }
+            }
+            $("#general-error").html(txt)
         })
     } else {
         showIfError()
