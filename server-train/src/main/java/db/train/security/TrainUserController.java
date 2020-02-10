@@ -33,6 +33,13 @@ public class TrainUserController {
     public String registerUserAccount(@ModelAttribute("user") @Valid TrainUserDTO userDTO,
                                       BindingResult result){
 
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            result.rejectValue("password", null, "Passwords do not match");
+        }
+        if (!userDTO.getEmail().equals(userDTO.getConfirmEmail())) {
+            result.rejectValue("email", null, "Emails do not match");
+        }
+
         TrainUser existing = repo.findByUsername(userDTO.getUsername());
         if (existing != null){
             result.rejectValue("username", null, "There is already an account registered with that username");
