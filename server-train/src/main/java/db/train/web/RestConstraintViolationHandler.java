@@ -1,7 +1,6 @@
 package db.train.web;
 
 import org.hibernate.JDBCException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

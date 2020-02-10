@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 
 @Service
 public class TrainUserService {
@@ -19,8 +20,28 @@ public class TrainUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public TrainUser addEntity(TrainUser user) {
+    public TrainUser upsertEntity(TrainUser user) {
+        TrainUser fetched = trainUserRepository.findByUsername(user.getUsername());
+        if (fetched != null) {
+            user.setId(fetched.getId());
+        }
+        if (user.getPassword().isEmpty()) {
+           if (fetched != null) {
+               user.setPassword(fetched.getPassword());
+               return save(user);
+           }
+        }
+        return addEntity(user);
+    }
+
+    public TrainUser addEntity(@Valid TrainUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return trainUserRepository.save(user);
+        return save(user);
+    }
+
+    private TrainUser save(TrainUser user) {
+        TrainUser returnValue = trainUserRepository.save(user);
+        returnValue.setPassword("");
+        return returnValue;
     }
 }
