@@ -130,7 +130,7 @@ function showSearch(htmlId, value, params) {
     var previousQuery = undefined
     var txt = ""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
-    txt+= `<input class="form-control" id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
+    txt+= `<input class="form-control" title='${params.title}' id='${htmlId}' type="text" name='${htmlId}' list='${htmlId}-datalist'/>`
     txt+= `<datalist id='${htmlId}-datalist' open='open'></datalist>`
     insertHtml(htmlId, txt)
     $(`[name='${htmlId}']`).bind("keyup input", function() {

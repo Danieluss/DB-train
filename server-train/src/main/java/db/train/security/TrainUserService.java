@@ -21,7 +21,7 @@ public class TrainUserService {
     }
 
     public TrainUser upsertEntity(TrainUser user) {
-        TrainUser fetched = trainUserRepository.findByUsername(user.getUsername());
+        TrainUser fetched = trainUserRepository.findById(user.getId()).orElse(null);
         if (fetched != null) {
             user.setId(fetched.getId());
         }
