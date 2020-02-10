@@ -26,7 +26,7 @@ function showFindConnectionForm() {
     txt+=`<div id="new-connection-container"></div>`
     txt+=`<button class="btn btn-primary" onclick="findConnection()">Find</button>`
     txt+=`<div id="connections-container"></div>`
-    txt+=`<div id="general-error"></div>`
+    txt+=`<div id="general-error" class="err"></div>`
     $("#mainContent").html(txt)
     showObject("new-connection", obj, edit["pathticket_new"], true)
 }
@@ -36,7 +36,6 @@ function findConnection() {
     getObject("new-connection", obj, edit["pathticket_new"])
     obj.time = timeToArr(obj.departure)
     console.log(obj)
-    alert("BLOCK")
     submit(api+"connection/findconnection", obj, function(data) {
         var connections = data
         showFindConnectionForm()

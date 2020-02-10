@@ -27,7 +27,6 @@ import javax.validation.constraints.AssertTrue;
 @Entity
 @SequenceGenerator(name = "connection_gen", sequenceName = "connection_seq", initialValue = 1000)
 @Table(indexes = {@Index(columnList = "id", name = "id")})
-@Check(constraints = "tickets_outside_interval(id) = 0")
 public class Connection {
 
     private static final Map<String, String> TOOLTIPS = ImmutableMap.<String, String>builder()
