@@ -120,6 +120,7 @@ edit["discount"] = [
 edit["trainuser"] = [
     {name: "id", type: "__info__"},
     {name: "username", type: "text"},
+    {name: "password", type: "password"},
     {name: "email", type: "text"},
     {name: "name", type: "text"},
     {name: "surname", type: "text"}

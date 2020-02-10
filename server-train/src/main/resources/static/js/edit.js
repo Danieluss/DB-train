@@ -49,7 +49,9 @@ function getDefaultObject(data) {
         }
         var s = data[keys[i]]
         var t
-        if(s == "String") {
+        if(keys[i] == "role") {
+            t = "ROLE_USER"
+        } else if(s == "String") {
             t = ""
         } else if(s == "Integer" || s == "Long" || s == "Double") {
             t = 0
@@ -98,7 +100,7 @@ function showInput(htmlId, value, params) {
     var txt=""
     txt+= `<label for='${htmlId}'>${params.name}</label>`
     keys = Object.keys(params)
-    txt+=`<input class='form-control' id='${htmlId}'`
+    txt+=`<input class='form-control' id='${htmlId}' autocomplete='off'`
     for(var i=0; i < keys.length; i++) {
         var key = keys[i]
         if(key == "name") {
@@ -115,6 +117,8 @@ function showInput(htmlId, value, params) {
         txt+= `value='${formatDate(value)}'`
     } else if(params.type == "time") {
         txt+= `value='${formatTime(value)}'`
+    } else if(params.type == "password") {
+        txt+= `value=""`
     } else {
         txt+=`value='${value}'`
     }
@@ -306,6 +310,7 @@ showSth = {
     __info__: showInfo,
     __recurrentInfo__: showRecurrentInfo,
     text: showInput,
+    password: showInput,
     number: showInput,
     checkbox: showInput,
     date: showInput,
@@ -379,6 +384,7 @@ function getArray(htmlId, value, params) {
 getSth = {
     __info__: undefined,
     text: getInput,
+    password: getInput,
     number: getInput,
     checkbox: getInput,
     date: getInput,
